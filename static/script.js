@@ -16,11 +16,15 @@ function addGptText(text) {
 }
 
 button.onclick = () => {
+  //話しかけるボタンを押した時
   const recognition = new window.webkitSpeechRecognition();
   button.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
-    fetch("/speech", {
+    addUserText(speech); //音声入力テキストをdiv要素で追加
+    button.style.backgroundColor = ""; //ボタン色リセット
+
+    fetch("/gpt", {
       method: "POST",
       body: new URLSearchParams({ speech }),
       headers: {
@@ -28,25 +32,8 @@ button.onclick = () => {
       },
     })
       .then((response) => response.text())
-      .then((text) => {
-        addUserText(text); //音声入力テキストをdiv要素で追加
-        const prompt = text;
-        button.style.backgroundColor = ""; //ボタン色リセット
-
-        fetch("/gpt", {
-          method: "POST",
-          body: new URLSearchParams({ prompt }),
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        })
-          .then((response) => response.text())
-          .then((gpt_response) => {
-            addGptText(gpt_response); //gptのレスポンスをdiv要素で追加
-          })
-          .catch((e) => {
-            console.error(e);
-          });
+      .then((gpt_response) => {
+        addGptText(gpt_response); //gptのレスポンスをdiv要素で追加
       })
       .catch((e) => {
         console.error(e);

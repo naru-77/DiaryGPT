@@ -20,15 +20,10 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/speech', methods=['POST']) # 音声入力のエンドポイント
-def speech():
-    text = request.form.get('speech')  # 音声テキストを取得
-    return text, 200
-
 @app.route('/gpt', methods=['POST']) # gptのエンドポイント
 def gpt():
     try:
-        prompt = request.form.get('prompt')
+        prompt = request.form.get('speech')
         response = query_chatgpt(prompt)
         return response, 200
     except Exception as e:
