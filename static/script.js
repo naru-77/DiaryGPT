@@ -15,6 +15,13 @@ function addGptText(text) {
   conversation.appendChild(gptDiv);
 }
 
+if ("speechSynthesis" in window) {
+  //読み上げに対応しているブラウザか確認
+  alert("このブラウザは読み上げに対応しています。🎉");
+} else {
+  alert("このブラウザは読み上げに対応していません。😭");
+}
+
 button.onclick = () => {
   //話しかけるボタンを押した時
   const recognition = new window.webkitSpeechRecognition();
@@ -34,6 +41,18 @@ button.onclick = () => {
       .then((response) => response.text())
       .then((gpt_response) => {
         addGptText(gpt_response); //gptのレスポンスをdiv要素で追加
+
+        if ("speechSynthesis" in window) {
+          //読み上げに対応しているブラウザか確認
+
+          const msg = new SpeechSynthesisUtterance(); //音声出力
+          msg.text = gpt_response; // 読み上げるテキスト
+          msg.lang = "ja-JP"; // 日本語を指定
+          msg.rate = 0.9; // 速度 (0.1 - 10)
+          msg.pitch = 1.2; //ピッチ (0 - 2)声の高さ
+
+          speechSynthesis.speak(msg);
+        }
       })
       .catch((e) => {
         console.error(e);
