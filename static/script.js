@@ -26,7 +26,6 @@ button.onclick = () => {
   button.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
-
     addUserText(speech); //音声入力テキストをdiv要素で追加
     button.style.backgroundColor = ""; //ボタン色リセット
 
