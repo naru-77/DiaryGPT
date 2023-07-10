@@ -79,5 +79,7 @@ function sendText() {
   } else {
     addUserText(inputText); //ユーザの回答をdiv要素で追加
     questionGpt(inputText); //gptの回答をdiv要素で追加
+
+    document.getElementById("textInput").value = ""; //テキストフィールドを空にする
   }
 }
