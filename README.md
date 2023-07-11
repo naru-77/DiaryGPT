@@ -25,3 +25,8 @@ pip install openai
 # 環境変数を設定
 
 export OPENAI_API_KEY=''
+
+## 必要ライブラリ
+flask
+sqlite3
+flask_sqlalchemy
