@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime  
+import datetime  
 import pytz
 import os
 import openai
@@ -25,7 +25,7 @@ class Post(db.Model): # データベースのテーブル
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0))
 
 with app.app_context():
     db.create_all()
