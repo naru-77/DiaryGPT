@@ -1,4 +1,6 @@
-const button = document.querySelector("#button");
+//音声入力ボタンを取得
+const button = document.querySelector(".btn.btn-primary");
+//会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
 
 function addUserText(text) {
