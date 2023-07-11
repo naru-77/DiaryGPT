@@ -70,6 +70,11 @@ def delete(id):
     db.session.commit()
     return redirect('/')
 
+@app.route('/<int:id>/contents', methods=['GET']) # コンテンツ詳細表示
+def contents(id):
+    post = Post.query.get(id)
+    return render_template('contents.html', post=post)    
+
     
 
 
