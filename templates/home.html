@@ -18,7 +18,11 @@
       <h1>Hello, World!</h1>
 
       <!-- このボタンを押すと、音声入力開始 -->
-      <button onclick="sendVoice()" class="btn btn-primary">話しかける</button>
+      <form onsubmit="event.preventDefault(); sendVoice();">
+        <button type="submit" class="btn btn-primary">話しかける</button>
+        <input type="radio" name="voice-lang" value="english" checked>English
+        <input type="radio" name="voice-lang" value="japanese">日本語
+      </form>
 
       <!-- テキスト入力フォーム -->
       <form onsubmit="event.preventDefault(); sendText();">

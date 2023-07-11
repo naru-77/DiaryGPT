@@ -1,4 +1,6 @@
-const button = document.querySelector("#button");
+//音声入力ボタンを取得
+const button = document.querySelector(".btn.btn-primary");
+//会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
 
 function addUserText(text) {
@@ -58,6 +60,10 @@ if ("speechSynthesis" in window) {
 
 function sendVoice() {
   //話しかけるボタンを押したら実行
+
+  //radioButtonから言語を取得
+  let voiceLang = document.querySelector('input[name="voice-lang"]:checked').value;
+
   const recognition = new window.webkitSpeechRecognition();
   button.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
@@ -66,6 +72,15 @@ function sendVoice() {
     questionGpt(speech); //gptの回答をdiv要素で追加
     button.style.backgroundColor = ""; //ボタン色リセット
   };
+
+  //言語の設定
+  switch(voiceLang){
+    case "japanese":
+      recognition.lang = "ja-JP";
+      break;
+    default:
+      recognition.lang = "en-US";
+  }
 
   recognition.start();
 }
