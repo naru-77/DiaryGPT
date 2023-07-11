@@ -6,11 +6,14 @@
   <a href="/create" role="button">新規作成画面</a>
   {% for post in posts %}
   <article>
-  <h1>{{ post.title }}</h1>
-  <a href="/{{ post.id }}/update" role="button">編集</a>
-  <a href="/{{ post.id }}/delete" role="button">削除</a>
-  <p>日時: {{ post.created_at }}</p>
-  <p>{{ post.body}}</p>
+  <a href="/{{ post.id }}/contents">
+    <h1>{{ post.title }}</h1>
+    <a href="/{{ post.id }}/update" role="button">編集</a>
+    <a href="/{{ post.id }}/delete" role="button">削除</a>
+    <p>日時: {{ post.created_at }}</p>
+    <p>{{ post.body}}</p>
+  </a>
+
   </article>
 {% endfor %}
 {% endblock %}
