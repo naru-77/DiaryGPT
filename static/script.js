@@ -51,12 +51,15 @@ function questionGpt(speech) {
 
 //ここから実行するJS
 
-if ("speechSynthesis" in window) {
-  //読み上げに対応しているブラウザか確認
-  alert("このブラウザは読み上げに対応しています。🎉");
-} else {
-  alert("このブラウザは読み上げに対応していません。😭");
+if (!localStorage.getItem("alerted")) {
+  if ("speechSynthesis" in window) {
+    alert("このブラウザは読み上げに対応しています。🎉");
+  } else {
+    alert("このブラウザは読み上げに対応していません。😭");
+  }
+  localStorage.setItem("alerted", "true");
 }
+
 
 function sendVoice() {
   //話しかけるボタンを押したら実行
