@@ -34,3 +34,7 @@ sqlite3
 flask_sqlalchemy
 
 flask_login
+
+## dbの初期化手順
+1. instance直下のblog.dbを削除
+1. "prepare_db.py"を実行
