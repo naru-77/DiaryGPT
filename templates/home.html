@@ -2,19 +2,25 @@
 {% block content %}
 
   <!-- 日記作成 -->
-  <h1>日記アプリケーション</h1>
-  <a href="/create" role="button">新規作成画面</a>
-  {% for post in posts %}
-  <article>
-  <a href="/{{ post.id }}/contents">
-    <h1>{{ post.title }}</h1>
-    <a href="/{{ post.id }}/update" role="button">編集</a>
-    <a href="/{{ post.id }}/delete" role="button">削除</a>
-    <p>日時: {{ post.created_at }}</p>
-    <p>{{ post.body}}</p>
-  </a>
 
-  </article>
+  <h1>日記アプリケーション</h1>
+  <a href="{{username}}/create" role="button">新規作成画面</a>
+  <a href="/logout" role="button">ログアウト</a>
+  {% if posts!=None %}
+  {% for post in posts %}
+  <div class="l-wrapper">
+    <article class="card">
+    <a href="{{username}}/{{ post.id }}/contents">
+      <div class="card__header">
+        <h1 class="card__title">{{ post.title }}</h1>
+        <a href="{{username}}/{{ post.id }}/update" role="button" class="card__contents">編集</a>
+        <a href="{{username}}/{{ post.id }}/delete" role="button" class="card__contents">削除</a>
+        <p class="card__contents">日時: {{ post.created_at }}</p>
+      </div>
+    </a>
+    </article>
+  </div>
 {% endfor %}
+{% endif %}
 {% endblock %}
 
