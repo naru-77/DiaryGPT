@@ -23,7 +23,7 @@ function questionGpt(speech) {
   //gptが質問を作って表示してくれる関数
   fetch("/gpt", {
     method: "POST",
-    body: new URLSearchParams({ speech }),
+    body: new URLSearchParams({ prompt: speech }),
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
