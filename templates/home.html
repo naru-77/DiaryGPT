@@ -2,6 +2,15 @@
 {% block content %}
 
   <!-- 日記作成 -->
+  <script src="static/calendar.js"></script>
+  <script type="text/javascript">
+    var link = document.createElement('link');
+    link.href = 'static/calendar.css';
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    var head = document.getElementsByTagName('head')[0];
+    head.appendChild(link);
+  </script>
 
   <h1>日記アプリケーション</h1>
   <a href="{{username}}/create" role="button">新規作成画面</a>
@@ -20,7 +29,22 @@
     </a>
     </article>
   </div>
-{% endfor %}
-{% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <div class="wrapper">
+    <!-- xxxx年xx月を表示 -->
+    <h1 id="header"></h1>
+
+    <!-- ボタンクリックで月移動 -->
+    <div id="next-prev-button">
+      <button id="prev" onclick="prev()">‹</button>
+      <button id="next" onclick="next()">›</button>
+    </div>
+
+    <!-- カレンダー -->
+    <div id="calendar"></div>
+  </div>
+
 {% endblock %}
 
