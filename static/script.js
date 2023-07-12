@@ -2,6 +2,7 @@
 const button = document.querySelector(".btn.btn-primary");
 //会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
+let quesTimes = 2; //質問回数
 
 function addUserText(text) {
   //ユーザの回答を表示する関数
@@ -23,24 +24,21 @@ function questionGpt(speech) {
   //gptが質問を作って表示してくれる関数
   fetch("/gpt", {
     method: "POST",
-    body: new URLSearchParams({ prompt: speech }),
+    body: new URLSearchParams({ speech }),
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   })
     .then((response) => response.text())
     .then((gpt_response) => {
-      addGptText(gpt_response); //gptのレスポンスをdiv要素で追加
+      addGptText(gpt_response);
 
       if ("speechSynthesis" in window) {
-        //読み上げに対応しているブラウザか確認
-
-        const msg = new SpeechSynthesisUtterance(); //音声出力
-        msg.text = gpt_response; // 読み上げるテキスト
-        msg.lang = "ja-JP"; // 日本語を指定
-        msg.rate = 0.9; // 速度 (0.1 - 10)
-        msg.pitch = 1.2; //ピッチ (0 - 2)声の高さ
-
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = gpt_response;
+        msg.lang = "ja-JP";
+        msg.rate = 0.9;
+        msg.pitch = 1.2;
         speechSynthesis.speak(msg);
       }
     })
@@ -60,24 +58,46 @@ if (!localStorage.getItem("alerted")) {
   localStorage.setItem("alerted", "true");
 }
 
-
 function sendVoice() {
   //話しかけるボタンを押したら実行
 
   //radioButtonから言語を取得
-  let voiceLang = document.querySelector('input[name="voice-lang"]:checked').value;
+  let voiceLang = document.querySelector(
+    'input[name="voice-lang"]:checked'
+  ).value;
 
   const recognition = new window.webkitSpeechRecognition();
   button.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
-    addUserText(speech); //ユーザの回答をdiv要素で追加
-    questionGpt(speech); //gptの回答をdiv要素で追加
     button.style.backgroundColor = ""; //ボタン色リセット
+    quesTimes -= 1;
+    console.log(quesTimes); //確認用ログ
+    addUserText(speech); //ユーザの回答をdiv要素で追加
+    if (quesTimes > 0) {
+      questionGpt(speech); //gptの回答をdiv要素で追加
+    } else {
+      const username = document.body.dataset.username;
+
+      fetch("/" + username + "/summary", {
+        method: "POST",
+        body: new URLSearchParams({ prompt: speech }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then(() => {
+          window.location.href = "/" + username; // リダイレクト
+          quesTimes = 2; // リセット
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   //言語の設定
-  switch(voiceLang){
+  switch (voiceLang) {
     case "japanese":
       recognition.lang = "ja-JP";
       break;
@@ -91,13 +111,34 @@ function sendVoice() {
 function sendText() {
   //テキスト送信ボタンを押したら実行
   const inputText = document.getElementById("textInput").value;
+  quesTimes -= 1;
+  console.log(quesTimes); //確認用ログ
+  document.getElementById("textInput").value = ""; //テキストフィールドを空にする
 
   if (inputText === "") {
     alert("テキストを入力してください！");
   } else {
     addUserText(inputText); //ユーザの回答をdiv要素で追加
-    questionGpt(inputText); //gptの回答をdiv要素で追加
 
-    document.getElementById("textInput").value = ""; //テキストフィールドを空にする
+    if (quesTimes > 0) {
+      questionGpt(inputText); //gptの回答をdiv要素で追加
+    } else {
+      const username = document.body.dataset.username;
+
+      fetch("/" + username + "/summary", {
+        method: "POST",
+        body: new URLSearchParams({ prompt: inputText }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then(() => {
+          window.location.href = "/" + username; // リダイレクト
+          quesTimes = 2; // リセット
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }
 }

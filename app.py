@@ -10,16 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
 
-
-def query_chatgpt(prompt): # gptを使うための関数
-    response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "あなたはインタビュアーです。最初は「今日はどんな一日でしたか？」という質問をしました。回答に応じて、よりその話題について深ぼることのできる質問をしてください。質問は簡潔に1つです。"},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    return response.choices[0].message.content.strip()
+# ここからDB
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -55,6 +46,9 @@ def home(username):
     if request.method == 'GET':
         posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
 
+        return render_template('home.html', posts=posts, username=username)
+    else:
+        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
         return render_template('home.html', posts=posts, username=username)
 
 
@@ -142,23 +136,90 @@ def contents(id,username):
         post = user.query.get(id)
         return render_template('contents.html', post=post, username=username)    
 
-        
+
+# ここからGPT
+
+openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
+
+# メッセージを保存するリスト
+messages = [
+    {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+    {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+]
 
 
-@app.route('/speech', methods=['POST']) # 音声入力のエンドポイント
-def speech():
-    text = request.form.get('speech')  # 音声テキストを取得
-    return text, 200
+def query_chatgpt(prompt): # 質問を生成する
+    # ユーザーのメッセージをリストに追加
+    messages.append({"role": "user", "content": prompt})
 
-@app.route('/gpt', methods=['POST']) # gptのエンドポイント
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+    messages.append({"role": "assistant", "content": gpt_response})
+
+    return gpt_response
+
+def summary_chatgpt(prompt): # 日記をまとめる
+
+    prompt.append({"role": "user", "content": "以上の情報を用いて、日記を作成してください。100字くらいの文章で、見やすさと分かりやすさに気をつけてください。"})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=prompt
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+
+    return gpt_response
+
+def title_chatgpt(prompt): # タイトルをつける
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": "以下の情報を用いて、日記のタイトルを書いてください。10文字程度の体言止めで、見やすさと分かりやすさに気をつけて作ってください。"},{"role": "user", "content": prompt}]
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+
+    return gpt_response
+
+
+@app.route('/gpt', methods=['POST']) # 質問を作る
 def gpt():
     try:
-        prompt = request.form.get('prompt')
+        prompt = request.form.get('speech')
         response = query_chatgpt(prompt)
         return response, 200
     except Exception as e:
         return str(e), 500
 
+
+@app.route('/<username>/summary', methods=['POST']) # 日記を作る
+def summary(username):
+    global messages  # messages をグローバル変数として宣言
+    prompt = request.form.get('prompt')
+    messages.append({"role": "user", "content": prompt})
+
+    diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
+    diary_response = summary_chatgpt(diary_messages) # 日記を作成
+    diary_title = title_chatgpt(diary_response) # タイトル生成
+
+    messages = [
+        {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+        {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+        ] # GPTの記憶をリセット
+        
+    post = Post(username=username,title=diary_title, body=diary_response)
+    db.session.add(post)
+    db.session.commit()
+    return "OK", 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-
