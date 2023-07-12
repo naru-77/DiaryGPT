@@ -5,7 +5,7 @@ import datetime
 import pytz
 import os
 import openai
-from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required
+from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
 
 openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
@@ -23,17 +23,18 @@ def query_chatgpt(prompt): # gptを使うための関数
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = os.urandom(24) # セッション情報の暗号化のためシークレットキーをランダム生成
 db = SQLAlchemy(app)
 
-login_manager = LoginManager()
+login_manager = LoginManager() # LoginManagerをインスタンス化
 login_manager.init_app(app)
 
 class Post(db.Model): # データベースのテーブル
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), nullable=True) # usernameをデータベースに追加
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0))
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
     
 
     
@@ -42,19 +43,20 @@ class User(UserMixin, db.Model): # ユーザーのテーブル
     username = db.Column(db.String(30), nullable=True)
     password = db.Column(db.String(12))
     
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-    
-
-@app.route('/', methods=['GET','POST']) # 最初の画面
+# ユーザー専用ホーム
+@app.route('/<username>', methods=['GET', 'POST'])
 @login_required # アクセス制限
-def home():
+def home(username):
     if request.method == 'GET':
-        posts = Post.query.all()
+        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
 
-    return render_template('home.html', posts=posts)
+        return render_template('home.html', posts=posts, username=username)
+
 
 @app.route('/signup', methods=['GET','POST']) # サインアップ画面
 def signup():
@@ -62,7 +64,7 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        user = User(username=username, password=generate_password_hash(password, method='sha256')) # ユーザーをインスタンス化、この時パスワードをハッシュ化
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
@@ -77,13 +79,14 @@ def login():
         password = request.form.get('password')
 
         user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
-        if check_password_hash(user.password,password):
+        if check_password_hash(user.password,password): # ハッシュ化されたパスワードと比較
             login_user(user)
-            return redirect('/')
+            return redirect(f'/{username}')
         
     else:
         return render_template('login.html')
 
+# ログアウト
 @app.route('/logout')
 @login_required # アクセス制限
 def logout():
@@ -91,48 +94,55 @@ def logout():
     return redirect('/login')
 
 
-@app.route('/create', methods=['GET','POST']) # 新規作成画面
+@app.route('/<username>/create', methods=['GET','POST']) #ユーザー専用新規作成画面
 @login_required # アクセス制限
-def create():
+def create(username):
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
 
-        post = Post(title=title, body=body)
+        post = Post(username=username ,title=title, body=body)
         db.session.add(post)
         db.session.commit()
-        return redirect('/')
+        return redirect(f'/{username}')
     else:
-        return render_template('create.html')
+        return render_template('create.html', username=username)
 
-@app.route('/<int:id>/update', methods=['GET','POST']) # 編集ボタン
+@app.route('/<username>/<int:id>/update', methods=['GET','POST']) # ユーザー専用編集
 @login_required # アクセス制限
-def update(id):
-    post = Post.query.get(id)
-    if request.method == 'GET':
-        return render_template('update.html', post=post)    
-    else:
-        post.title = request.form.get('title')
-        post.body = request.form.get('body')
+def update(id,username):
+    user = Post.query.filter_by(username=username).first()
+    if(user != None):
+        post = user.query.get(id)
+    
+        if request.method == 'GET':
+            return render_template('update.html', post=post)    
+        else:
+            post.title = request.form.get('title')
+            post.body = request.form.get('body')
 
+            db.session.commit()
+            return redirect(f'/{username}')
+    
+@app.route('/<username>/<int:id>/delete', methods=['GET']) # ユーザー専用削除
+@login_required # アクセス制限
+def delete(id,username):
+    user = Post.query.filter_by(username=username).first()
+    if(user != None):
+        post = user.query.get(id)
+
+        db.session.delete(post)
         db.session.commit()
-        return redirect('/')
-    
-@app.route('/<int:id>/delete', methods=['GET']) # 削除ボタン
-@login_required # アクセス制限
-def delete(id):
-    post = Post.query.get(id)
+        return redirect(f'/{username}')
 
-    db.session.delete(post)
-    db.session.commit()
-    return redirect('/')
+@app.route('/<username>/<int:id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
+def contents(id,username):
+    user = Post.query.filter_by(username=username).first()
+    if(user != None):
+        post = user.query.get(id)
+        return render_template('contents.html', post=post, username=username)    
 
-@app.route('/<int:id>/contents', methods=['GET']) # コンテンツ詳細表示
-def contents(id):
-    post = Post.query.get(id)
-    return render_template('contents.html', post=post)    
-
-    
+        
 
 
 @app.route('/speech', methods=['POST']) # 音声入力のエンドポイント

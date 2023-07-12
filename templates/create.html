@@ -37,6 +37,6 @@
     <!-- ここにid=user or id=gptのdiv要素が追加されていく -->
     <div id="conversation"></div>
     </div>
-    <div><a href="/">ホームへ戻る</a></div>
+    <div><a href="/{{username}}">ホームへ戻る</a></div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}
