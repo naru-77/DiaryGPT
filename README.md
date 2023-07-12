@@ -28,5 +28,9 @@ export OPENAI_API_KEY=''
 
 ## 必要ライブラリ
 flask
+
 sqlite3
+
 flask_sqlalchemy
+
+flask_login

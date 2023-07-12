@@ -21,3 +21,45 @@ h1 {
 #conversation {
   margin-top: 30px;
 }
+
+/*--------------------------------------
+  カード型
+--------------------------------------*/
+.l-wrapper {
+  margin: 1rem 0;
+  width: 380px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+}
+
+
+.card {
+  background-color: #fff;
+  box-shadow: 0 0 0px rgba(0, 0, 0, .16);
+  color: #212121;
+  text-decoration: none;
+}
+
+.card__header {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card__title {
+  padding: 1rem 1.5rem 0;
+  font-size: 1.6rem;
+  order: 1;
+  font-weight: bold;
+
+}
+
+.card__contents {
+  padding: 1rem 1.5rem 0;
+  font-size: 0.8rem;
+  order: 1;
+}
+
+a {
+  text-decoration: none;
+}
