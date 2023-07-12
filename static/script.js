@@ -2,7 +2,7 @@
 const button = document.querySelector(".btn.btn-primary");
 //会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
-let quesTimes = 4; //質問回数
+let quesTimes = 2; //質問回数
 
 function addUserText(text) {
   //ユーザの回答を表示する関数
@@ -20,19 +20,11 @@ function addGptText(text) {
   conversation.appendChild(gptDiv);
 }
 
-function addSummaryText(text) {
-  //サマリーを表示する関数
-  const sumDiv = document.createElement("div");
-  sumDiv.setAttribute("id", "sum");
-  sumDiv.innerText = "日記: " + text;
-  conversation.appendChild(sumDiv);
-}
-
 function questionGpt(speech) {
   //gptが質問を作って表示してくれる関数
   fetch("/gpt", {
     method: "POST",
-    body: new URLSearchParams({ prompt: speech }),
+    body: new URLSearchParams({ speech }),
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
@@ -78,9 +70,30 @@ function sendVoice() {
   button.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
-    addUserText(speech); //ユーザの回答をdiv要素で追加
-    questionGpt(speech); //gptの回答をdiv要素で追加
     button.style.backgroundColor = ""; //ボタン色リセット
+    quesTimes -= 1;
+    console.log(quesTimes); //確認用ログ
+    addUserText(speech); //ユーザの回答をdiv要素で追加
+    if (quesTimes > 0) {
+      questionGpt(speech); //gptの回答をdiv要素で追加
+    } else {
+      const username = document.body.dataset.username;
+
+      fetch("/" + username + "/summary", {
+        method: "POST",
+        body: new URLSearchParams({ prompt: speech }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then(() => {
+          window.location.href = "/" + username; // リダイレクト
+          quesTimes = 2; // リセット
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   //言語の設定
@@ -110,15 +123,18 @@ function sendText() {
     if (quesTimes > 0) {
       questionGpt(inputText); //gptの回答をdiv要素で追加
     } else {
-      fetch("/summary", {
+      const username = document.body.dataset.username;
+
+      fetch("/" + username + "/summary", {
         method: "POST",
-        body: new URLSearchParams({ inputText }),
+        body: new URLSearchParams({ prompt: inputText }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       })
         .then(() => {
-          window.location.href = "/"; // リダイレクト
+          window.location.href = "/" + username; // リダイレクト
+          quesTimes = 2; // リセット
         })
         .catch((error) => {
           console.error(error);

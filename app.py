@@ -47,6 +47,9 @@ def home(username):
         posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
 
         return render_template('home.html', posts=posts, username=username)
+    else:
+        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
+        return render_template('home.html', posts=posts, username=username)
 
 
 @app.route('/signup', methods=['GET','POST']) # サインアップ画面
@@ -195,13 +198,13 @@ def gpt():
         return response, 200
     except Exception as e:
         return str(e), 500
-    
 
-@app.route('/summary', methods=['POST']) # 日記を作る
-def summary():
+
+@app.route('/<username>/summary', methods=['POST']) # 日記を作る
+def summary(username):
     global messages  # messages をグローバル変数として宣言
-    inputText = request.form.get('inputText')
-    messages.append({"role": "user", "content": inputText})
+    prompt = request.form.get('prompt')
+    messages.append({"role": "user", "content": prompt})
 
     diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
     diary_response = summary_chatgpt(diary_messages) # 日記を作成
@@ -212,7 +215,7 @@ def summary():
         {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
         ] # GPTの記憶をリセット
         
-    post = Post(title=diary_title, body=diary_response)
+    post = Post(username=username,title=diary_title, body=diary_response)
     db.session.add(post)
     db.session.commit()
     return "OK", 200
