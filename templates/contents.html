@@ -11,7 +11,7 @@
   </head>
   <body>
     <div class="notebook-paper">
-      <div class="background-container" id="{{ post.id }}">
+      <div class="background-container" id="{{ post.post_id }}">
 
         <div class="content">
 
@@ -31,10 +31,9 @@
 
     </div>
     <p id="myElement"></p>
-
-    <button id="next-button">次へ</button>
-    <button id="back-button">前へ</button>
-    <div class="back_home"><a href="/{{username}}">ホームへ戻る</a></div>
+    <button class="arrow next_design" id="next-button">次へ</button>
+    <button class="arrow back_design" id="back-button">前へ</button>
+    <div class="back_home"><a href="/{{post.username}}">ホームへ戻る</a></div>
 
     <script src="/static/javascript/contents_script.js"></script>
   </body>

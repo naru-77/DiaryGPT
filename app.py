@@ -32,19 +32,19 @@ db = SQLAlchemy(app)
 login_manager = LoginManager() # LoginManagerをインスタンス化
 login_manager.init_app(app)
 
-class Post(db.Model): # データベースのテーブル
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), nullable=True) # usernameをデータベースに追加
+    username = db.Column(db.String(30), nullable=True)  # ユーザー名
+    post_id = db.Column(db.Integer, nullable=False)  # 投稿ID
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
-    
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0))  # 時間の秒以下を無視
 
-    
-class User(UserMixin, db.Model): # ユーザーのテーブル
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=True)
     password = db.Column(db.String(12))
+    post_count = db.Column(db.Integer, default=0)  # 投稿数を管理するカラム
     
 @app.before_request
 def make_session_permanent():
@@ -108,20 +108,22 @@ def create(username):
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
-
-        post = Post(username=username ,title=title, body=body)
+        user = User.query.filter_by(username=username).first()
+        user.post_count = user.post_count + 1
+        db.session.commit()
+        post = Post(username=username ,post_id=user.post_count,title=title, body=body)
         db.session.add(post)
         db.session.commit()
         return redirect(f'/{username}')
     else:
         return render_template('create.html', username=username)
 
-@app.route('/<username>/<int:id>/update', methods=['GET','POST']) # ユーザー専用編集
+@app.route('/<username>/<int:post_id>/update', methods=['GET','POST']) # ユーザー専用編集
 @login_required # アクセス制限
-def update(id,username):
-    user = Post.query.filter_by(username=username).first()
-    if(user != None):
-        post = user.query.get(id)
+def update(post_id,username):
+    posts = Post.query.filter_by(username=username).first()
+    if(posts != None):
+        post = posts.query.get(post_id)
     
         if request.method == 'GET':
             return render_template('update.html', post=post)    
@@ -132,26 +134,28 @@ def update(id,username):
             db.session.commit()
             return redirect(f'/{username}')
     
-@app.route('/<username>/<int:id>/delete', methods=['GET']) # ユーザー専用削除
+@app.route('/<username>/<int:post_id>/delete', methods=['GET']) # ユーザー専用削除
 @login_required # アクセス制限
-def delete(id,username):
-    user = Post.query.filter_by(username=username).first()
-    if(user != None):
-        post = user.query.get(id)
-
+def delete(post_id,username):
+    posts = Post.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first()
+    if(posts != None):
+        post = posts.query.get(post_id)
+        user.post_count = user.post_count - 1
         db.session.delete(post)
         db.session.commit()
         return redirect(f'/{username}')
 
-@app.route('/<username>/<int:id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
-def contents(id,username):
-    user = Post.query.filter_by(username=username).first()
-    if(user != None):
-        post = user.query.get(id)
-        if(post != None):
-            return render_template('contents.html', post=post, username=username)    
-
-        
+@app.route('/<username>/<int:post_id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
+def contents(post_id,username):
+    user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
+    if(post_id==0):
+        return redirect(f'/{username}/{user.post_count}/contents')
+    elif(post_id==user.post_count+1):
+        return redirect(f'/{username}/{1}/contents')  
+    else:
+        post = Post.query.filter_by(username=username, post_id=post_id).first()
+        return render_template('contents.html', post=post, username=username)
 
 
 @app.route('/speech', methods=['POST']) # 音声入力のエンドポイント

@@ -28,8 +28,8 @@ next_button.addEventListener("click", function() {
 // 次へボタンを押されたときの表示日記の変更
 function nextChangeContent() {
   var currentURL = window.location.href; // 現在のURLを取得
-  var currentID = parseInt(elementId); // URLからIDを取得
-  var newID = parseInt(currentID) + 1; // IDを1加算
+  var currentID = parseInt(elementId); // URLからpost_idを取得
+  var newID = parseInt(currentID) + 1; // post_idを1加算
   var urlParts = currentURL.split("/"); // URLを"/"で分割した配列を取得
   urlParts[4] = newID; // 5番目の要素を置き換える
   var newURL = urlParts.join("/"); // 配列を"/"で結合して新しいURLを作成
@@ -39,8 +39,8 @@ function nextChangeContent() {
 // 前へボタンを押されたときの表示日記の変更
 function backChangeContent() {
   var currentURL = window.location.href; // 現在のURLを取得
-  var currentID = parseInt(elementId); // URLからIDを取得
-  var newID = parseInt(currentID) - 1; // IDを1加算
+  var currentID = parseInt(elementId); // URLからpost_idを取得
+  var newID = parseInt(currentID) - 1; // post_idを1加算
   var urlParts = currentURL.split("/"); // URLを"/"で分割した配列を取得
   urlParts[4] = newID; // 5番目の要素を置き換える
   var newURL = urlParts.join("/"); // 配列を"/"で結合して新しいURLを作成
