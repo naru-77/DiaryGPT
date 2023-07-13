@@ -2,41 +2,43 @@
 {% block content %}
 <h1>新規登録</h1>
 <form method="POST">
-    <label for="title">タイトル</label>
-    <input type="text" name="title">
-    <label for="body">内容</label>
-    <input type="text" name="body">
-    <input type="submit" value="新規登録">
+  <label for="title">日付</label>
+  <input type="date" name="date" id="date-form">
+  <label for="title">タイトル</label>
+  <input type="text" name="title">
+  <label for="body">内容</label>
+  <input type="text" name="body">
+  <input type="submit" value="新規登録">
 </form>
 
 <div class="container">
-    <!-- このボタンを押すと、音声入力開始 -->
-    <form onsubmit="event.preventDefault(); sendVoice();">
-      <button type="submit" class="btn btn-primary">話しかける</button>
-      <input type="radio" name="voice-lang" value="japanese" checked>日本語
-      <input type="radio" name="voice-lang" value="english">English
-    </form>
-    
-    <!-- テキスト入力フォーム -->
-    <form onsubmit="event.preventDefault(); sendText();">
-      <div class="row">
-        <div class="col-md-8">
-          <input
-            type="text"
-            id="textInput"
-            class="form-control"
-            placeholder="テキストを入力してください"
-          />
-        </div>
-        <div class="col-md-4">
-          <button type="submit" class="btn btn-success">文字で送信</button>
-        </div>
+  <!-- このボタンを押すと、音声入力開始 -->
+  <form onsubmit="event.preventDefault(); sendVoice();">
+    <button type="submit" class="btn btn-primary">話しかける</button>
+    <input type="radio" name="voice-lang" value="japanese" checked>日本語
+    <input type="radio" name="voice-lang" value="english">English
+  </form>
+  
+  <!-- テキスト入力フォーム -->
+  <form onsubmit="event.preventDefault(); sendText();">
+    <div class="row">
+      <div class="col-md-8">
+        <input
+          type="text"
+          id="textInput"
+          class="form-control"
+          placeholder="テキストを入力してください"
+        />
       </div>
-    </form>
-    
-    <!-- ここにid=user or id=gptのdiv要素が追加されていく -->
-    <div id="conversation"></div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-success">文字で送信</button>
+      </div>
     </div>
-    <div><a href="/{{username}}">ホームへ戻る</a></div>
-    <script src="/static/javascript/script.js"></script>
+  </form>
+  
+  <!-- ここにid=user or id=gptのdiv要素が追加されていく -->
+  <div id="conversation"></div>
+  </div>
+  <div><a href="/{{username}}">ホームへ戻る</a></div>
+  <script src="/static/javascript/script.js"></script>
 {% endblock %}

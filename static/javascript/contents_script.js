@@ -1,4 +1,3 @@
-
 let backgroundContainer = document.getElementsByClassName("background-container")[0];
 let elementId = backgroundContainer.id;
 let next_button = document.getElementById("next-button");
@@ -30,7 +29,7 @@ next_button.addEventListener("click", function() {
   });
 });
 
-// 次へボタンを押されたときの表示日記の変更
+// 次へボタンが押されたときの表示日記の変更
 function nextChangeContent() {
   let currentURL = window.location.href; // 現在のURLを取得
   let currentID = parseInt(elementId); // URLからpost_idを取得
@@ -41,7 +40,7 @@ function nextChangeContent() {
   window.location.href = newURL; // 新しいURLに移動
 }
 
-// 前へボタンを押されたときの表示日記の変更
+// 前へボタンが押されたときの表示日記の変更
 function backChangeContent() {
   let currentURL = window.location.href; // 現在のURLを取得
   let currentID = parseInt(elementId); // URLからpost_idを取得

@@ -4,23 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime  
 from datetime import timedelta
 import pytz
+from dotenv import load_dotenv
 import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
+import re #正規表現
 
-openai.api_key = "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" # 以降のopenaiライブラリにはこのAPIを用いる
+# load_dotenv()  # .envファイルから環境変数を読み込む
+openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
 
-
-def query_chatgpt(prompt): # gptを使うための関数
-    response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "あなたはインタビュアーです。最初は「今日はどんな一日でしたか？」という質問をしました。回答に応じて、よりその話題について深ぼることのできる質問をしてください。質問は簡潔に1つです。"},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    return response.choices[0].message.content.strip()
+# ここからDB
 
 
 
@@ -38,7 +32,9 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, nullable=False)  # 投稿ID
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0))  # 時間の秒以下を無視
+    date = db.Column(db.Date, nullable=False, default=datetime.date.today())
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
+    
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,6 +59,9 @@ def home(username):
     if request.method == 'GET':
         posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
 
+        return render_template('home.html', posts=posts, username=username)
+    else:
+        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
         return render_template('home.html', posts=posts, username=username)
 
 
@@ -90,9 +89,16 @@ def login():
         if check_password_hash(user.password,password): # ハッシュ化されたパスワードと比較
             login_user(user)
             return redirect(f'/{username}')
+        else:
+            return redirect('/login')
         
     else:
         return render_template('login.html')
+    
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect('/login')
 
 # ログアウト
 @app.route('/logout')
@@ -108,13 +114,10 @@ def create(username):
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
-        user = User.query.filter_by(username=username).first()
-        user.post_count += 1  # 投稿数を1増やす
-        db.session.commit()
-        post = Post(username=username ,post_id=user.post_count,title=title, body=body)
-        db.session.add(post)
-        db.session.commit()
-        return redirect(f'/{username}')
+        input_date = request.form.get('date')
+
+        return makeDiary(username, title, body, input_date)
+    
     else:
         return render_template('create.html', username=username)
 
@@ -147,6 +150,7 @@ def delete(post_id,username):
         return redirect(f'/{username}')
 
 @app.route('/<username>/<int:post_id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
+@login_required # アクセス制限
 def contents(post_id,username):
     user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
     if(post_id==0): # 最も古いものから最も新しいものへ
@@ -158,20 +162,103 @@ def contents(post_id,username):
         return render_template('contents.html', post=post, username=username)
 
 
-@app.route('/speech', methods=['POST']) # 音声入力のエンドポイント
-def speech():
-    text = request.form.get('speech')  # 音声テキストを取得
-    return text, 200
+# ここからGPT
 
-@app.route('/gpt', methods=['POST']) # gptのエンドポイント
+
+# メッセージを保存するリスト
+messages = [
+    {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+    {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+]
+
+
+def query_chatgpt(prompt): # 質問を生成する
+    # ユーザーのメッセージをリストに追加
+    messages.append({"role": "user", "content": prompt})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+    messages.append({"role": "assistant", "content": gpt_response})
+
+    return gpt_response
+
+
+
+def summary_chatgpt(prompt): # 日記をまとめる
+
+    prompt.append({"role": "user", "content": "以上の情報を用いて、日記を作成してください。100字くらいの文章で、見やすさと分かりやすさに気をつけてください。"})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=prompt
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+
+    return gpt_response
+
+def title_chatgpt(prompt): # タイトルをつける
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": "以下の情報を用いて、日記のタイトルを書いてください。10文字程度の体言止めで、見やすさと分かりやすさに気をつけて作ってください。"},{"role": "user", "content": prompt}]
+    )
+
+    # GPTの応答をリストに追加
+    gpt_response = response.choices[0].message.content.strip()
+
+    return gpt_response
+
+
+@app.route('/gpt', methods=['POST']) # 質問を作る
 def gpt():
     try:
-        prompt = request.form.get('prompt')
+        prompt = request.form.get('speech')
         response = query_chatgpt(prompt)
         return response, 200
     except Exception as e:
         return str(e), 500
 
+
+def makeDiary(username, title, body, input_date):
+    #日付の取得と整合性のチェック
+    if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
+        date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
+    else:
+        date = datetime.date.today()
+    user = User.query.filter_by(username=username).first()
+    user.post_count += 1  # 投稿数を1増やす
+    post = Post(username=username ,post_id=user.post_count, title=title, body=body, date=date)
+    db.session.add(post)
+    db.session.commit()
+    return redirect(f'/{username}')
+
+
+@app.route('/<username>/summary', methods=['POST']) # 日記を作る
+def summary(username):
+    global messages  # messages をグローバル変数として宣言
+    prompt = request.form.get('prompt')
+    input_date = request.form.get('date')
+    
+    messages.append({"role": "user", "content": prompt})
+
+    diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
+    diary_response = summary_chatgpt(diary_messages) # 日記を作成
+    diary_title = title_chatgpt(diary_response) # タイトル生成
+
+    messages = [
+        {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+        {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+        ] # GPTの記憶をリセットinput_date = request.form.get('date')
+    
+    return makeDiary(username, diary_title, diary_response, input_date)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-
