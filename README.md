@@ -7,6 +7,7 @@
 ### 初期設定が終わったらいつもやること
 
 bash setup.sh #venv使う人向け
+
 python app.py
 
 あとは新規登録してログインすれば使えます！
@@ -44,15 +45,11 @@ export OPENAI_API_KEY=''
 
 ### 必要ライブラリ
 
-flask
-
-pytz
-
-sqlite3
-
-flask_sqlalchemy
-
-flask_login
+- flask
+- pytz
+- sqlite3
+- flask_sqlalchemy
+- flask_login
 
 ### db の初期化手順
 
