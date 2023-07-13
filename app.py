@@ -101,7 +101,7 @@ def create(username):
 
         #日付の取得と整合性のチェック
         input_date = request.form.get('date')
-        if re.match(r'\d{4}-\d{2}-\d{2}', input_date):
+        if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
             date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
         else:
             date = datetime.date.today()

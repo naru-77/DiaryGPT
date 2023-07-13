@@ -2,6 +2,7 @@
 {% block content %}
 <h1>編集画面</h1>
 <form method="POST">
+    <h1>{{ post.date }}</h1>
     <label for="title">タイトル</label>
     <input type="text" name="title" value={{ post.title }}>
     <label for="body">内容</label>

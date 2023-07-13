@@ -19,14 +19,15 @@
   {% for post in posts %}
   <div class="l-wrapper">
     <article class="card">
-    <a href="{{username}}/{{ post.id }}/contents">
       <div class="card__header">
-        <h1 class="card__title">{{ post.title }}</h1>
+        <h2 class="card__contents">{{ post.date }}</h2>
+        <a href="{{username}}/{{ post.id }}/contents">
+          <h1 class="card__title">{{ post.title }}</h1>
+        </a>
         <a href="{{username}}/{{ post.id }}/update" role="button" class="card__contents">編集</a>
         <a href="{{username}}/{{ post.id }}/delete" role="button" class="card__contents">削除</a>
-        <p class="card__contents">日時: {{ post.created_at }}</p>
+        <p class="card__contents">作成日時: {{ post.created_at }}</p>
       </div>
-    </a>
     </article>
   </div>
   {% endfor %}
