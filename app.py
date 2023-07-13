@@ -223,7 +223,6 @@ def makeDiary(username, title, body, input_date):
     return redirect(f'/{username}')
 
 
-
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
 def summary(username):
     global messages  # messages をグローバル変数として宣言
