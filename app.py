@@ -83,6 +83,11 @@ def login():
         
     else:
         return render_template('login.html')
+    
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect('/login')
 
 # ログアウト
 @app.route('/logout')
@@ -141,6 +146,7 @@ def delete(id,username):
         return redirect(f'/{username}')
 
 @app.route('/<username>/<int:id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
+@login_required # アクセス制限
 def contents(id,username):
     user = Post.query.filter_by(username=username).first()
     if(user != None):
