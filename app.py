@@ -223,6 +223,11 @@ def gpt():
 def summary(username):
     global messages  # messages をグローバル変数として宣言
     prompt = request.form.get('prompt')
+    input_date = request.form.get('date')
+    if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
+        date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
+    else:
+        date = datetime.date.today()
     messages.append({"role": "user", "content": prompt})
 
     diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
@@ -232,9 +237,9 @@ def summary(username):
     messages = [
         {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
         {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
-        ] # GPTの記憶をリセット
-        
-    post = Post(username=username,title=diary_title, body=diary_response)
+        ] # GPTの記憶をリセットinput_date = request.form.get('date')
+    
+    post = Post(username=username,title=diary_title, body=diary_response, date=date)
     db.session.add(post)
     db.session.commit()
     return "OK", 200

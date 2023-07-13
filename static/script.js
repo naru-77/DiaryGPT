@@ -59,7 +59,10 @@ function sendMessage(message){
 
     fetch("/" + username + "/summary", {
       method: "POST",
-      body: new URLSearchParams({ prompt: message }),
+      body: new URLSearchParams({
+        prompt: message,
+        date: document.querySelector("#date-form").value
+      }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
