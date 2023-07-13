@@ -21,11 +21,11 @@
     <article class="card">
       <div class="card__header">
         <h2 class="card__contents">{{ post.date }}</h2>
-        <a href="{{username}}/{{ post.id }}/contents">
+        <a href="{{username}}/{{ post.post_id }}/contents">
           <h1 class="card__title">{{ post.title }}</h1>
         </a>
-        <a href="{{username}}/{{ post.id }}/update" role="button" class="card__contents">編集</a>
-        <a href="{{username}}/{{ post.id }}/delete" role="button" class="card__contents">削除</a>
+        <a href="{{username}}/{{ post.post_id }}/update" role="button" class="card__contents">編集</a>
+        <a href="{{username}}/{{ post.post_id }}/delete" role="button" class="card__contents">削除</a>
         <p class="card__contents">作成日時: {{ post.created_at }}</p>
       </div>
     </article>
