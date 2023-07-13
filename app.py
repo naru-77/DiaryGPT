@@ -80,6 +80,8 @@ def login():
         if check_password_hash(user.password,password): # ハッシュ化されたパスワードと比較
             login_user(user)
             return redirect(f'/{username}')
+        else:
+            return redirect('/login')
         
     else:
         return render_template('login.html')
