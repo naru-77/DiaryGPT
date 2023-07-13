@@ -105,18 +105,10 @@ def create(username):
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
-
-        #日付の取得と整合性のチェック
         input_date = request.form.get('date')
-        if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
-            date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
-        else:
-            date = datetime.date.today()
 
-        post = Post(username=username ,title=title, body=body, date=date)
-        db.session.add(post)
-        db.session.commit()
-        return redirect(f'/{username}')
+        return makeDiary(username, title, body, input_date)
+    
     else:
         return render_template('create.html', username=username)
 
@@ -219,15 +211,25 @@ def gpt():
         return str(e), 500
 
 
+def makeDiary(username, title, body, input_date):
+    #日付の取得と整合性のチェック
+    if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
+        date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
+    else:
+        date = datetime.date.today()
+    post = Post(username=username ,title=title, body=body, date=date)
+    db.session.add(post)
+    db.session.commit()
+    return redirect(f'/{username}')
+
+
+
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
 def summary(username):
     global messages  # messages をグローバル変数として宣言
     prompt = request.form.get('prompt')
     input_date = request.form.get('date')
-    if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
-        date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
-    else:
-        date = datetime.date.today()
+    
     messages.append({"role": "user", "content": prompt})
 
     diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
@@ -239,10 +241,7 @@ def summary(username):
         {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
         ] # GPTの記憶をリセットinput_date = request.form.get('date')
     
-    post = Post(username=username,title=diary_title, body=diary_response, date=date)
-    db.session.add(post)
-    db.session.commit()
-    return "OK", 200
+    return makeDiary(username, diary_title, diary_response, input_date)
 
 
 if __name__ == '__main__':
