@@ -33,7 +33,9 @@ body{
 }
 /* 画面全体 */
 .notebook-paper{
+  position: relative;
   margin: 50px 100px;
+  perspective: 2000px;
 }
 
 /* 日記全体 */
@@ -53,23 +55,25 @@ body{
 
  /* 次へ進む処理 */
 .next-rotate {
+  transform-origin: left center;
   animation: nextAnimmation 1s linear;
 }
 
 @keyframes nextAnimmation {
   0%{ transform:rotateY(0);}
-  100%{ transform:rotateY(90deg);}
+  100%{ transform:rotateY(-180deg);}
 }
  /* 次へ進む処理終わり */
 
  /* 前へ進む処理 */
 .back-rotate {
+  transform-origin: right center;
   animation: backAnimation 1s linear;
 }
 
 @keyframes backAnimation {
   0%{ transform:rotateY(0);}
-  100%{ transform:rotateY(-90deg);}
+  100%{ transform:rotateY(180deg);}
 }
  /* 前へ進む処理終わり */
 
@@ -85,6 +89,8 @@ body{
   line-height: 2rem;
   margin: 0;
 }
+
+/* ボタン */
 .arrow{
 	position: relative;
 	display: inline-block;
@@ -106,6 +112,8 @@ body{
 	content: "";
 	vertical-align: middle;
 }
+
+/* 次へボタン */
 #next-button {
   width:80px;
   height:80px;
@@ -133,6 +141,7 @@ body{
 	transform: rotate(45deg);
 }
 
+/* 前へボタン */
 #back-button {
   width:80px;
   height:80px;
@@ -159,4 +168,45 @@ body{
 	border-right: 3px solid #fff;
 	-webkit-transform: rotate(-135deg);
 	transform: rotate(-135deg);
+}
+
+/* 鉛筆 */
+#pen {
+  display: block;
+  position: absolute;
+  bottom: -160px;
+  right: 30px;
+  width: auto;
+  max-height: 50%;
+}
+
+.pen_img{
+  width: 100%;
+  height: 100%;
+}
+
+/* 消しゴム */
+#kesigomu {
+  display: block;
+  position: absolute;
+  bottom: -100px;
+  left: 30px;
+  width: auto;
+  max-height: 50%;
+}
+
+.kesigomu_img{
+  width: 100%;
+  height: 100%;
+}
+
+/* 白背景 */
+.back {
+  width: 100%;
+  height: 100%;
+  background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }

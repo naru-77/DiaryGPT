@@ -46,7 +46,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(12))
     post_count = db.Column(db.Integer, default=0)  # 投稿数を管理するカラム
     
-@app.before_request
+@app.before_request # セッションについての処理追加
 def make_session_permanent():
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=30)  
@@ -109,7 +109,7 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
         user = User.query.filter_by(username=username).first()
-        user.post_count = user.post_count + 1
+        user.post_count += 1  # 投稿数を1増やす
         db.session.commit()
         post = Post(username=username ,post_id=user.post_count,title=title, body=body)
         db.session.add(post)
@@ -141,7 +141,7 @@ def delete(post_id,username):
     user = User.query.filter_by(username=username).first()
     if(posts != None):
         post = posts.query.get(post_id)
-        user.post_count = user.post_count - 1
+        user.post_count = user.post_count - 1 # 投稿数を1減らす
         db.session.delete(post)
         db.session.commit()
         return redirect(f'/{username}')
@@ -149,9 +149,9 @@ def delete(post_id,username):
 @app.route('/<username>/<int:post_id>/contents', methods=['GET']) # ユーザー専用コンテンツ詳細表示
 def contents(post_id,username):
     user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
-    if(post_id==0):
+    if(post_id==0): # 最も古いものから最も新しいものへ
         return redirect(f'/{username}/{user.post_count}/contents')
-    elif(post_id==user.post_count+1):
+    elif(post_id==user.post_count+1): # 最も新しいものから最も古いものへ
         return redirect(f'/{username}/{1}/contents')  
     else:
         post = Post.query.filter_by(username=username, post_id=post_id).first()
