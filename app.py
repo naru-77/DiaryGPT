@@ -9,7 +9,7 @@ import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
 
-openai.api_key = "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" # 以降のopenaiライブラリにはこのAPIを用いる
+openai.api_key = "" # 以降のopenaiライブラリにはこのAPIを用いる
 
 
 def query_chatgpt(prompt): # gptを使うための関数
