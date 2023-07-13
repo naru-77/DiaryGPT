@@ -47,6 +47,33 @@ function questionGpt(speech) {
     });
 }
 
+function sendMessage(message){
+  quesTimes -= 1;
+  console.log(quesTimes); //確認用ログ
+  addUserText(message); //ユーザの回答をdiv要素で追加
+
+  if (quesTimes > 0) {
+    questionGpt(message); //gptの回答をdiv要素で追加
+  } else {
+    const username = document.body.dataset.username;
+
+    fetch("/" + username + "/summary", {
+      method: "POST",
+      body: new URLSearchParams({ prompt: message }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+      .then(() => {
+        window.location.href = "/" + username; // リダイレクト
+        quesTimes = 2; // リセット
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+}
+
 //ここから実行するJS
 
 if (!localStorage.getItem("alerted")) {
@@ -71,29 +98,8 @@ function sendVoice() {
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
     button.style.backgroundColor = ""; //ボタン色リセット
-    quesTimes -= 1;
-    console.log(quesTimes); //確認用ログ
-    addUserText(speech); //ユーザの回答をdiv要素で追加
-    if (quesTimes > 0) {
-      questionGpt(speech); //gptの回答をdiv要素で追加
-    } else {
-      const username = document.body.dataset.username;
 
-      fetch("/" + username + "/summary", {
-        method: "POST",
-        body: new URLSearchParams({ prompt: speech }),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
-        .then(() => {
-          window.location.href = "/" + username; // リダイレクト
-          quesTimes = 2; // リセット
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+    sendMessage(speech);
   };
 
   //言語の設定
@@ -111,34 +117,12 @@ function sendVoice() {
 function sendText() {
   //テキスト送信ボタンを押したら実行
   const inputText = document.getElementById("textInput").value;
-  quesTimes -= 1;
-  console.log(quesTimes); //確認用ログ
+
   document.getElementById("textInput").value = ""; //テキストフィールドを空にする
 
   if (inputText === "") {
     alert("テキストを入力してください！");
   } else {
-    addUserText(inputText); //ユーザの回答をdiv要素で追加
-
-    if (quesTimes > 0) {
-      questionGpt(inputText); //gptの回答をdiv要素で追加
-    } else {
-      const username = document.body.dataset.username;
-
-      fetch("/" + username + "/summary", {
-        method: "POST",
-        body: new URLSearchParams({ prompt: inputText }),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
-        .then(() => {
-          window.location.href = "/" + username; // リダイレクト
-          quesTimes = 2; // リセット
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+    sendMessage(inputText);
   }
 }
