@@ -3,11 +3,13 @@ from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import datetime  
 import pytz
+from dotenv import load_dotenv
 import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
 
+load_dotenv()  # .envファイルから環境変数を読み込む
 openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
 
 # ここからDB
