@@ -1,14 +1,15 @@
 from flask import Flask
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 import datetime  
+from datetime import timedelta
 import pytz
 import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
 
-openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
+openai.api_key = "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" # 以降のopenaiライブラリにはこのAPIを用いる
 
 
 def query_chatgpt(prompt): # gptを使うための関数
@@ -20,6 +21,8 @@ def query_chatgpt(prompt): # gptを使うための関数
         ]
     )
     return response.choices[0].message.content.strip()
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -43,7 +46,12 @@ class User(UserMixin, db.Model): # ユーザーのテーブル
     username = db.Column(db.String(30), nullable=True)
     password = db.Column(db.String(12))
     
-
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=30)  
+    
+    
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -140,7 +148,8 @@ def contents(id,username):
     user = Post.query.filter_by(username=username).first()
     if(user != None):
         post = user.query.get(id)
-        return render_template('contents.html', post=post, username=username)    
+        if(post != None):
+            return render_template('contents.html', post=post, username=username)    
 
         
 
