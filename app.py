@@ -8,6 +8,7 @@ import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
+import re #正規表現
 
 load_dotenv()  # .envファイルから環境変数を読み込む
 openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
@@ -27,6 +28,7 @@ class Post(db.Model): # データベースのテーブル
     username = db.Column(db.String(30), nullable=True) # usernameをデータベースに追加
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
+    date = db.Column(db.Date, nullable=False, default=datetime.date.today())
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
     
 
@@ -97,7 +99,14 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
 
-        post = Post(username=username ,title=title, body=body)
+        #日付の取得と整合性のチェック
+        input_date = request.form.get('date')
+        if re.match(r'\d{4}-\d{2}-\d{2}', input_date):
+            date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
+        else:
+            date = datetime.date.today()
+
+        post = Post(username=username ,title=title, body=body, date=date)
         db.session.add(post)
         db.session.commit()
         return redirect(f'/{username}')
