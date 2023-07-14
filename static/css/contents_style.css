@@ -32,17 +32,21 @@ body{
   z-index: -99;
 }
 /* 画面全体 */
-.notebook-paper{
+.view{
   position: relative;
   margin: 50px 100px;
   perspective: 2000px;
+  height: 100%;
 }
+
 
 /* 日記全体 */
 .background-container {
-  position: inline-block;
-  width: 100%;
-  height: 100%;
+
+  /* position: inline-block; */
+  
+  width: 100%; 
+  min-height: 100vh;
   background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
   background-size: cover;
   background-position: center;
@@ -50,7 +54,34 @@ body{
   font-family: "myfont", sans-serif;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  
+}
+
+/* 現在のページ */
+.now {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  width: 100%; 
+  height: 100%;
+
+}
+
+/* 前のページ */
+.past {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: -1;
+}
+
+/* 次のページ */
+.next {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: -1;
 }
 
  /* 次へ進む処理 */
@@ -210,3 +241,11 @@ body{
   left: 0;
   z-index: -1;
 }
+
+/* 編集、削除 */
+.change {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+}
+
