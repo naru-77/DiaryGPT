@@ -32,7 +32,7 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, nullable=False)  # 投稿ID
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=datetime.date.today())
+    date = db.Column(db.Date, nullable=False, default=datetime.date.today(), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
     
 
