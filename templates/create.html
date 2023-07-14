@@ -1,7 +1,11 @@
 
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="/static/css/calendar.css">
+
 <div class="container mt-5">
-  <h1 class="mb-4">新規登録</h1>
+  <h1 class="mb-4 title">新規登録</h1>
   <form method="POST" class="mb-5">
     <div class="form-group">
       <label for="date-form">日付</label>
@@ -70,7 +74,7 @@
     次の質問で終了する
   </button>
 
-  <div><a href="/{{username}}" class="btn btn-link">ホームへ戻る</a></div>
+  <div><a href="/{{username}}" class="btn btn-link myButton">ホームへ戻る</a></div>
 </div>
 <script src="/static/javascript/script.js"></script>
 
