@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>新規登録</h1>
+
+<link rel="stylesheet" type="text/css" href="/static/css/calendar.css">
+
+
+<h1 class="title">新規登録</h1>
 <form method="POST">
   <label for="title">日付</label>
   <input type="date" name="date" id="date-form">
@@ -39,6 +43,7 @@
   <!-- ここにid=user or id=gptのdiv要素が追加されていく -->
   <div id="conversation"></div>
   </div>
-  <div><a href="/{{username}}">ホームへ戻る</a></div>
-  <script src="/static/javascript/script.js"></script>
+  <div><a href="/{{username}}" class="myButton">ホームへ戻る</a></div>
+  <script src="/static/javascript/script.js">
+  </script>
 {% endblock %}
