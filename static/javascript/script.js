@@ -2,7 +2,17 @@
 const button = document.querySelector(".btn.btn-primary");
 //会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
-let quesTimes = 2; //質問回数
+let endOnNextQuestion = false; //次の質問で終了するかどうか
+
+function endQuestioning() {
+  //終了ボタンを押したら実行
+  endOnNextQuestion = !endOnNextQuestion; // ボタンの状態を反転
+
+  // ボタンの色を変更
+  document.getElementById("end-button").classList.toggle("btn-danger");
+
+  console.log(endOnNextQuestion);
+}
 
 function addUserText(text) {
   //ユーザの回答を表示する関数
@@ -47,21 +57,17 @@ function questionGpt(speech) {
     });
 }
 
-function sendMessage(message){
-  quesTimes -= 1;
-  console.log(quesTimes); //確認用ログ
+function sendMessage(message) {
   addUserText(message); //ユーザの回答をdiv要素で追加
 
-  if (quesTimes > 0) {
-    questionGpt(message); //gptの回答をdiv要素で追加
-  } else {
+  if (endOnNextQuestion) {
     const username = document.body.dataset.username;
 
     fetch("/" + username + "/summary", {
       method: "POST",
       body: new URLSearchParams({
         prompt: message,
-        date: document.querySelector("#date-form").value
+        date: document.querySelector("#date-form").value,
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -69,11 +75,13 @@ function sendMessage(message){
     })
       .then(() => {
         window.location.href = "/" + username; // リダイレクト
-        quesTimes = 2; // リセット
+        endOnNextQuestion = false; // リセット
       })
       .catch((error) => {
         console.error(error);
       });
+  } else {
+    questionGpt(message); //gptの回答をdiv要素で追加
   }
 }
 
@@ -129,4 +137,3 @@ function sendText() {
     sendMessage(inputText);
   }
 }
-

@@ -31,7 +31,7 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, nullable=False)  # 投稿ID
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=datetime.date.today())
+    date = db.Column(db.Date, nullable=False, default=datetime.date.today(), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
     
 
@@ -119,7 +119,7 @@ def create(username):
         body = request.form.get('body')
         input_date = request.form.get('date')
 
-        return makeDiary(username, title, body, input_date)
+        return registerDiary(username, title, body, input_date)
     
     else:
         return render_template('create.html', username=username)
@@ -170,7 +170,7 @@ def contents(post_id,username):
 
 # メッセージを保存するリスト
 messages = [
-    {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+    {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
     {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
 ]
 
@@ -194,7 +194,7 @@ def query_chatgpt(prompt): # 質問を生成する
 
 def summary_chatgpt(prompt): # 日記をまとめる
 
-    prompt.append({"role": "user", "content": "以上の情報を用いて、日記を作成してください。100字くらいの文章で、見やすさと分かりやすさに気をつけてください。"})
+    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかないでください。文章は少なくても良いです。タイトルは絶対につけないでください。"})
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -229,15 +229,22 @@ def gpt():
         return str(e), 500
 
 
-def makeDiary(username, title, body, input_date):
+def registerDiary(username, title, body, input_date):
     #日付の取得と整合性のチェック
     if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
         date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
     else:
         date = datetime.date.today()
+
+    #既に同じ日に日記があった場合
+    #こことdateのuniqueをコメントアウトすれば複数登録できるようになる
+    if(Post.query.filter_by(username=username, date=date).first()):
+        return redirect('/{username}/create') #これだと書いた内容が消えちゃうので余裕あれば直したい
+
     user = User.query.filter_by(username=username).first()
     user.post_count += 1  # 投稿数を1増やす
-    post = Post(username=username ,post_id=user.post_count, title=title, body=body, date=date)
+
+    post = Post(username=username, post_id=user.post_count, title=title, body=body, date=date)
     db.session.add(post)
     db.session.commit()
     return redirect(f'/{username}')
@@ -256,11 +263,11 @@ def summary(username):
     diary_title = title_chatgpt(diary_response) # タイトル生成
 
     messages = [
-        {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
-        {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
-        ] # GPTの記憶をリセットinput_date = request.form.get('date')
+    {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
+    {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+    ] # GPTの記憶をリセットinput_date = request.form.get('date')
     
-    return makeDiary(username, diary_title, diary_response, input_date)
+    return registerDiary(username, diary_title, diary_response, input_date)
 
 
 if __name__ == '__main__':
