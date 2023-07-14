@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>ログイン画面</h1>
+<link rel="stylesheet" type="text/css" href="/static/css/calendar.css">
+
+<h1 class="title">ログイン画面</h1>
 <form method="POST">
   <label for="">ユーザー名</label>
   <input type="text" name="username">
   <label for="">パスワード</label>
   <input type="password" name="password">
-  <input type="submit" value="ログイン">
+<div class="login-button-container">
+  <input type="submit" value="ログイン"class="login-button">
+</div>
 </form>
 <div>
-  <a href="signup">アカウントを新規作成</a>    
+  <a href="signup" class="signup-button myButton">アカウントを新規作成</a>    
 </div>
 {% endblock %}

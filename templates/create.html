@@ -1,3 +1,4 @@
+
 {% extends "base.html" %} {% block content %}
 <div class="container mt-5">
   <h1 class="mb-4">新規登録</h1>
@@ -60,6 +61,7 @@
     <div id="gpt">GPT-3: 今日はどんな1日でしたか？</div>
   </div>
 
+
   <button
     id="end-button"
     class="btn btn-secondary rounded-pill mb-3"
@@ -71,4 +73,5 @@
   <div><a href="/{{username}}" class="btn btn-link">ホームへ戻る</a></div>
 </div>
 <script src="/static/javascript/script.js"></script>
+
 {% endblock %}

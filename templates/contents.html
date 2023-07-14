@@ -8,9 +8,10 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     />
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
-    <div class="back_home"><a href="/{{user.username}}">ホームへ戻る</a></div>
+    <div class="back_home"><a href="/{{user.username}}" class="myButton">ホームへ戻る</a></div>
     <div class="view">
       <!-- for文でループさせてurlに対応する投稿を持ってくる -->
     {% for post in posts %}
@@ -151,8 +152,8 @@
     <button class="arrow next_design" id="next-button">次へ</button>
     <button class="arrow back_design" id="back-button">前へ</button>
     <div class="change">
-      <a href="/{{user.username}}/{{ post_id }}/update" role="button" class="card__contents">編集</a>
-      <a href="/{{user.username}}/{{ post_id }}/delete" role="button" class="card__contents">削除</a>
+      <a href="/{{user.username}}/{{ post_id }}/update" role="button" class="card__contents myButton">編集</a>
+      <a href="/{{user.username}}/{{ post_id }}/delete" role="button" class="card__contents myButton">削除</a>
     </div>
 
 
