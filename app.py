@@ -11,9 +11,8 @@ from flask_login import UserMixin, LoginManager, login_user,logout_user, login_r
 from werkzeug.security import generate_password_hash, check_password_hash
 import re #正規表現
 
-# load_dotenv()  # .envファイルから環境変数を読み込む
+load_dotenv()  # .envファイルから環境変数を読み込む
 openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
-
 # ここからDB
 
 
@@ -51,6 +50,10 @@ def make_session_permanent():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/', methods=['GET', 'POST']) #自動的にログイン画面へ
+def go_login():
+    return redirect('/login')
 
 # ユーザー専用ホーム
 @app.route('/<username>', methods=['GET', 'POST'])
@@ -158,8 +161,8 @@ def contents(post_id,username):
     elif(post_id==user.post_count+1): # 最も新しいものから最も古いものへ
         return redirect(f'/{username}/{1}/contents')  
     else:
-        post = Post.query.filter_by(username=username, post_id=post_id).first()
-        return render_template('contents.html', post=post, username=username)
+        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
+        return render_template('contents.html', posts=posts, user=user,post_id=post_id)
 
 
 # ここからGPT
