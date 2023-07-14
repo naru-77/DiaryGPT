@@ -50,8 +50,17 @@ export OPENAI_API_KEY=''
 - sqlite3
 - flask_sqlalchemy
 - flask_login
+- stability_sdk
 
 ### db の初期化手順
 
 1. instance 直下の blog.db を削除
 1. "prepare_db.py"を実行
+
+
+### 絵の生成について
+stability-sdkを使いました
+
+https://dreamstudio.ai/account
+このurlに行って、アカウントを作成し、APIキーを取得する必要があります。
+後は、stability_sdkをインストールすれば使えます。

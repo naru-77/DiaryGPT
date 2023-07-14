@@ -28,6 +28,10 @@
             <div class="title">
               <h1>{{ post.title }}</h1>
             </div>
+
+            <div class="picture">
+              <img src="{{ images_dict[post_id] }}" alt="Generated Image">
+            </div>
   
             <div class="container">
               <div class="content">{{ post.body }}</div>
@@ -54,7 +58,9 @@
             <div class="title">
               <h1>{{ post.title }}</h1>
             </div>
-  
+            <div class="picture">
+              <img src="{{ images_dict[post_id-1] }}" alt="Generated Image">
+            </div>
             <div class="container">
               <div class="content">{{ post.body }}</div>
             </div>
@@ -78,7 +84,9 @@
           <div class="title">
             <h1>{{ post.title }}</h1>
           </div>
-
+          <div class="picture">
+            <img src="{{ images_dict[user.post_count] }}" alt="Generated Image">
+          </div>
           <div class="container">
             <div class="content">{{ post.body }}</div>
           </div>
@@ -105,7 +113,9 @@
             <div class="title">
               <h1>{{ post.title }}</h1>
             </div>
-  
+            <div class="picture">
+              <img src="{{ images_dict[post_id+1] }}" alt="Generated Image">
+            </div>
             <div class="container">
               <div class="content">{{ post.body }}</div>
             </div>
@@ -129,7 +139,9 @@
             <div class="title">
               <h1>{{ post.title }}</h1>
             </div>
-  
+            <div class="picture">
+              <img src="{{ images_dict[1] }}" alt="Generated Image">
+            </div>
             <div class="container">
               <div class="content">{{ post.body }}</div>
             </div>
@@ -151,8 +163,8 @@
     <button class="arrow next_design" id="next-button">次へ</button>
     <button class="arrow back_design" id="back-button">前へ</button>
     <div class="change">
-      <a href="/{{user.username}}/{{ post_id }}/update" role="button" class="card__contents">編集</a>
-      <a href="/{{user.username}}/{{ post_id }}/delete" role="button" class="card__contents">削除</a>
+      <button class="btn btn-success" onclick="location.href='/{{user.username}}/{{ post_id }}/update'">編集</button>
+      <button class="btn btn-danger" onclick="location.href='/{{user.username}}/{{ post_id }}/delete'">削除</button>
     </div>
 
 
