@@ -170,7 +170,7 @@ def contents(post_id,username):
 
 # メッセージを保存するリスト
 messages = [
-    {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
+    {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
     {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
 ]
 
@@ -194,7 +194,7 @@ def query_chatgpt(prompt): # 質問を生成する
 
 def summary_chatgpt(prompt): # 日記をまとめる
 
-    prompt.append({"role": "user", "content": "以上の情報を用いて、日記を作成してください。100字くらいの文章で、見やすさと分かりやすさに気をつけてください。"})
+    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかないでください。文章は少なくても良いです。タイトルは絶対につけないでください。"})
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -263,9 +263,9 @@ def summary(username):
     diary_title = title_chatgpt(diary_response) # タイトル生成
 
     messages = [
-        {"role": "system", "content": "あなたは日記を作るためのインタビュアーです。短い質問を1つだけしてください。"},
-        {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
-        ] # GPTの記憶をリセットinput_date = request.form.get('date')
+    {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
+    {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+    ] # GPTの記憶をリセットinput_date = request.form.get('date')
     
     return registerDiary(username, diary_title, diary_response, input_date)
 
