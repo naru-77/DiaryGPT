@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask import render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import extract
 import datetime  
 from datetime import timedelta
 import pytz
@@ -33,6 +34,13 @@ class Post(db.Model):
     body = db.Column(db.String(300), nullable=False)
     date = db.Column(db.Date, nullable=False, default=datetime.date.today(), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
+
+    def serializeForCal(self):
+        return {
+            'date': self.date.day,
+            'title': self.title,
+            'post_id': self.post_id
+        }
     
 
 class User(UserMixin, db.Model):
@@ -66,6 +74,24 @@ def home(username):
     else:
         posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
         return render_template('home.html', posts=posts, username=username)
+
+
+@app.route('/cal', methods=['POST']) # カレンダーからの要求への応答
+def cal():
+    data = request.get_json()
+    year = data.get('year')
+    month = data.get('month')
+    username = data.get('username')
+
+    result = Post.query.filter(
+        extract('year', Post.date) == year,
+        extract('month', Post.date) == month,
+        username == username
+        ).all()
+
+    #serializeは自分で用意しないとだめなのだろうか
+    serialized_result = [item.serializeForCal() for item in result]
+    return jsonify({'result': serialized_result})
 
 
 @app.route('/signup', methods=['GET','POST']) # サインアップ画面
@@ -247,8 +273,7 @@ def registerDiary(username, title, body, input_date):
     post = Post(username=username, post_id=user.post_count, title=title, body=body, date=date)
     db.session.add(post)
     db.session.commit()
-    return redirect(f'/{username}')
-
+    return redirect(f'/{username}/{user.post_count}/contents')
 
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
 def summary(username):
