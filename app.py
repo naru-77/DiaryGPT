@@ -210,12 +210,8 @@ def delete(post_id,username):
 def contents(post_id,username):
     user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
     posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
-    # if(post_id==posts[0].post_id): # 最も古いものから最も新しいものへ
-    #     return redirect(f'/{username}/{user.post_count}/contents')
-    # elif(post_id==posts[len(posts)-1].post_id): # 最も新しいものから最も古いものへ
-    #     return redirect(f'/{username}/{1}/contents')  
-
-   
+    # 年月日まで含めたソート 古い日付から新しい日付へ
+    sorted_posts = sorted(posts, key=lambda post: post.date.strftime('%Y-%m-%d')) 
     images_dict = {}
     
     for post in posts:
@@ -230,7 +226,7 @@ def contents(post_id,username):
             # 画像がない場合
             images_dict[post.post_id] = None
 
-    return render_template('contents.html', posts=posts, user=user,post_id=post_id, images_dict=images_dict)
+    return render_template('contents.html', posts=sorted_posts, user=user,post_id=post_id, images_dict=images_dict)
 
 
 
