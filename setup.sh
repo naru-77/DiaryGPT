@@ -15,7 +15,7 @@ source venv/bin/activate
 python3 -m pip install --upgrade pip
 
 # 必要なパッケージをインストール
-pip install -r requirements.txt
+pip install -r requirements-for-setup.txt
 
 # dbの初期化
 # 'instance'ディレクトリが存在すれば削除
