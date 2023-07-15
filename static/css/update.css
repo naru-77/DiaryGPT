@@ -8,3 +8,11 @@
     white-space: pre-wrap; /* 入力された改行や空白スペースを保持 */
     overflow-wrap: break-word; /* 長い単語が行の終わりに来た場合に自動で改行 */
 }
+
+.background-container.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 必要に応じて以下の高さを調整 */
+  height: 100vh; 
+}
