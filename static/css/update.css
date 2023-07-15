@@ -5,4 +5,6 @@
 .update_container {
     width: 400px;
     height: 400px;
+    white-space: pre-wrap; /* 入力された改行や空白スペースを保持 */
+    overflow-wrap: break-word; /* 長い単語が行の終わりに来た場合に自動で改行 */
 }

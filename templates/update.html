@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/static/css/contents_style.css">
 <link rel="stylesheet" href="/static/css/update.css">
 
-<h1>編集画面</h1>
+<h1 class="title">編集画面</h1>
 <div class="view">
     <div class="background-container">
         <div class="content">
@@ -14,7 +14,8 @@
                     <input type="text" name="title" value={{ post.title }}>
                 </div>
                 <label for="body"></label>
-                <input type="text" name="body" class="update_container" value={{ post.body }}>
+                <!-- <input type="text" name="body" class="update_container" value={{ post.body }}>-->
+                <textarea name="body" class="update_container">{{ post.body }}</textarea> 
                 <input type="submit" value="更新"class="login-button">
             </form>
         </div>
