@@ -1,5 +1,6 @@
 //音声入力ボタンを取得
 const button = document.querySelector(".btn.btn-primary");
+const speakButton = document.querySelector(".btn.btn-primary.mb-2");
 //会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
 let endOnNextQuestion = false; //次の質問で終了するかどうか
@@ -114,10 +115,10 @@ function sendVoice() {
   ).value;
 
   const recognition = new window.webkitSpeechRecognition();
-  button.style.backgroundColor = "red"; //録音時のボタン色変える
+  speakButton.style.backgroundColor = "red"; //録音時のボタン色変える
   recognition.onresult = (event) => {
     const speech = event.results[0][0].transcript; //認識されたテキストを取得
-    button.style.backgroundColor = ""; //ボタン色リセット
+    speakButton.style.backgroundColor = ""; //ボタン色リセット
 
     sendMessage(speech);
   };
