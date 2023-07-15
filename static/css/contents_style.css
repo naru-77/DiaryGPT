@@ -257,7 +257,42 @@ body{
   display: flex;
   justify-content: center;
   column-gap: 30px;
+  color: #fff;
+  border-radius: 10px 50px/50px 10px;
+  font-family: "myfont", sans-serif;
+  /* font-weight: bold; */
+  padding: .5em 1em;
 }
+
+/* 編集ボタン */
+.update_btn{
+  color: #fff;
+  font-weight: bold;
+  padding: 14px 19px;
+  border: solid 1px #fff;
+  background-color: #3c8aff;
+  text-decoration: none;
+  padding: .5em 1em;
+  /* background: #fff; */
+  border-radius: 10px 50px/50px 10px;
+  border: dashed 2px #333;
+}
+
+/* 削除ボタン */
+.delete_btn{
+  color: #fff;
+  font-weight: bold;
+  padding: 14px 19px;
+  border: solid 1px #fff;
+  background-color: #ec2c35;
+  text-decoration: none;
+  padding: .5em 1em;
+  /* background: #fff; */
+  border-radius: 10px 50px/50px 10px;
+  border: dashed 2px #333;
+}
+
+
 
 
 .myButton {
@@ -271,4 +306,10 @@ body{
   /* background: #fff; */
   border-radius: 10px 50px/50px 10px;
   border: dashed 2px #333;
+  font-family: "myfont", sans-serif;
+}
+
+.delete {
+  text-decoration: none;
+  color: #fff;
 }
