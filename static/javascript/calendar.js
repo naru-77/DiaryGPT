@@ -74,13 +74,19 @@ function createProcess(year, month) {
                     if(obj = diaryData.find(item =>{
                         return item.date === count;
                     })){
-                        contentRef = `<a href='/${username}/${obj.post_id}/contents'>${obj.title}</a>`;
+                        contentRef = `<a href='/${username}/${obj.post_id}/contents' class='cell-title'>${obj.title}</a>`;
                     }
 
                     if(year == today.getFullYear()
                       && month == (today.getMonth())
                       && count == today.getDate()){
                         calendar += "<td class='today'>" + count + contentRef + "</td>";
+                        // pin画像追加
+                        // calendar += `<td class='today'>
+                        // <img class='pin' src='/static/css/img/pngegg.png'> 
+                        // ${count} 
+                        // ${contentRef}
+                        // </td>`;
                     } else {
                         calendar += `<td><div class='cell-content'>${count}${contentRef}</div></td>`;
                     }

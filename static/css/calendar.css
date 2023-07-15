@@ -61,12 +61,11 @@ th, td {
     outline: 2px solid #ddd;
 }
 
-日付のスタイル設定
+/* 日付のスタイル設定 */
 #calendar td {
     vertical-align: top; /* テキストを上に寄せる */
     font-size: 0.8em; /* フォントサイズを小さくする */
     padding: 0.5em; /* 内側の余白を設定（適宜調整） */
-    background-color: #fff;
 } 
 
 
@@ -94,8 +93,25 @@ td.disabled {
 }
 /*本日*/
 td.today {
-    background-color: #D65E72;
+    background-color: #eb73a1;
     color: #fff;
+}
+
+.cell-title {
+    display: block;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    font-family: "myfont", sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    overflow-wrap: break-word; /* 単語内で改行 */
+    white-space: normal;       /* 改行を許可 */
+    width: 100%;               /* 親要素の幅に合わせる */
+}
+
+.cell-title:hover {
+    color: #D65E72;
 }
 
 /*ボタン*/
@@ -122,6 +138,15 @@ td.today {
 #next {
     float: right;
 }
+
+
+/* .pin {
+    position: absolute;
+    width: 40px; /* サイズは必要に応じて調整 */
+    /* top: -10px;  /* 適切な位置にピンを配置 */
+    /* left: 50%;   /* セルの中央に配置 */
+    /* transform: translateX(-50%); 横方向の中央揃え 
+} */
 
 
 /* 新規作成　ログインボタン */
