@@ -99,8 +99,8 @@ a {
    top: 42%;
    cursor: pointer;/*マウスカーソルを指マークに*/
    outline: none;/*クリックをしたら出てくる枠線を消す*/
-   border-top: 3px solid #000000;/*矢印の色*/
-   border-right: 3px solid #000000;/*矢印の色*/
+   border-top: 10px solid #ffffff;/*矢印の色*/
+   border-right: 10px solid #ffffff;/*矢印の色*/
    height: 30px;
    width: 30px;
 }
