@@ -14,11 +14,11 @@
     head.appendChild(link);
   </script>
 
-
-  <div class="button-group">
+<h1 class="title">ちょこっと日記</h1>
+<div class="button-group">
   <a href="{{username}}/create" role="button"class="red">新規作成画面</a>
   <a href="/logout" role="button"class="green-myButton">ログアウト</a>
-  </div>
+</div>
   {% if posts!=None %}
   {% for post in posts %}
   <!-- <div class="l-wrapper">
@@ -36,9 +36,15 @@
   </div> -->
   {% endfor %}
   {% endif %}
+    <!-- 絵をランダムで -->
+  <ul class="slider">
+    {%for post_id in picture_posts_id %}
+    <li><a href="{{username}}/{{ post_id }}/contents"><img class="slider-image" src="{{ images_dict[post_id] }}" alt=""></a></li>
+    {% endfor %}
+  </ul>
 
   <div class="wrapper">
-    <h1 class="title">ちょこっと日記</h1>
+    <h1 class="subtitle">ちょこっと日記</h1>
     <!-- xxxx年xx月を表示 -->
     <h1 id="header"></h1>
 
@@ -52,12 +58,7 @@
     <div id="calendar"></div>
   </div>
   <div class="gallery">
-  <!-- 絵をランダムで -->
-    <ul class="slider">
-      {%for post_id in picture_posts_id %}
-      <li><a href="{{username}}/{{ post_id }}/contents"><img class="slider-image" src="{{ images_dict[post_id] }}" alt=""></a></li>
-      {% endfor %}
-    </ul>
+
     
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>

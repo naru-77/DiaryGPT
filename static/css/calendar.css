@@ -155,7 +155,7 @@ td.today {
     margin-top: 5px;
     color: #fff;
     font-weight: bold;
-    background-color: #1cca65;
+    background-color: #be6e22;
     text-decoration: none;
     font-family: "myfont", sans-serif;
     padding: .5em 1em;
@@ -167,12 +167,12 @@ td.today {
     margin-top: 5px;
     color: #fff;
     font-weight: bold;
-    background-color: #294de9;
+    background-color: #be6e22;
     text-decoration: none;
     font-family: "myfont", sans-serif;
     padding: .5em 1em;
     border-radius: 10px 50px/50px 10px;
-    border: dashed 1px #fff;
+    border: dashed 2px #333;
 }
 
 .myButton {
@@ -195,6 +195,18 @@ td.today {
 }
 
 .title {
+    font-size: 3.5rem;
+    color: #635454c0;
+    text-shadow:3px 3px 0 #FFF, 3px -3px 0 #FFF,
+    -1px -4px 0 #FFF, -4px 4px 0 #FFF,
+    -3px -3px 0 #FFF,  0-1px 0 #FFF,
+    3px 0 0 #FFF, -3px 0 0 #FFF;
+    text-align: center;
+    font-weight: bold;
+    font-family: "myfont", sans-serif;
+}
+
+.subtitle {
     text-align: center;
     font-weight: bold;
     font-family: "myfont", sans-serif;
