@@ -82,7 +82,7 @@ function createProcess(year, month) {
                       && count == today.getDate()){
                         calendar += "<td class='today'>" + count + contentRef + "</td>";
                     } else {
-                        calendar += "<td>" + count + contentRef + "</td>";
+                        calendar += `<td><div class='cell-content'>${count}${contentRef}</div></td>`;
                     }
                 }
             }
