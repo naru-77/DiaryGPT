@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, flash
 from flask import render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract
@@ -142,13 +142,21 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
-        user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
-        if check_password_hash(user.password,password): # ハッシュ化されたパスワードと比較
-            login_user(user)
-            return redirect(f'/{username}')
+        # 登録されているすべてのユーザー名を取得
+        usernames = User.query.with_entities(User.username).all()
+        for name in usernames:
+            if username == name[0]:
+                user = User.query.filter_by(username=username).first()
+                if user and check_password_hash(user.password, password):
+                    login_user(user)
+                    return redirect(f'/{username}')
+                else:
+                    flash('パスワードが間違っています', 'error')  # エラーメッセージの表示
+                    return redirect('/login')  
         else:
-            return redirect('/login')
+            flash('ユーザー名が見つかりません', 'error')  # エラーメッセージの表示
+
+        return redirect('/login')
         
     else:
         return render_template('login.html')
