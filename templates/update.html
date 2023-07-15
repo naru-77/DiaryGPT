@@ -2,8 +2,11 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/contents_style.css">
 <link rel="stylesheet" href="/static/css/update.css">
-
+<div>
+    <a href="/{{username}}" class="btn btn-link myButton">ホームへ戻る</a>
+</div>
 <h1 class="title">編集画面</h1>
+
 <div class="view">
     <div class="background-container flex-container">
         <div class="content">
@@ -25,7 +28,5 @@
 </div>
 <span id="pen"><img class="pen_img" src="/static/css/img/pen.png" alt=""></span>
 <span id="kesigomu"><img class="kesigomu_img" src="/static/css/img/kesigomu.png" alt=""></span>
-<div>
-    <a href="/{{username}}" class="btn btn-link myButton">ホームへ戻る</a>
-</div>
+
 {% endblock %}
