@@ -14,10 +14,10 @@
     head.appendChild(link);
   </script>
 
-  <h1 class="title">ちょこっと日記</h1>
+
   <div class="button-group">
-  <a href="{{username}}/create" role="button"class="myButton">新規作成画面</a>
-  <a href="/logout" role="button"class="myButton">ログアウト</a>
+  <a href="{{username}}/create" role="button"class="red">新規作成画面</a>
+  <a href="/logout" role="button"class="green-myButton">ログアウト</a>
   </div>
   {% if posts!=None %}
   {% for post in posts %}
@@ -38,6 +38,7 @@
   {% endif %}
 
   <div class="wrapper">
+    <h1 class="title">ちょこっと日記</h1>
     <!-- xxxx年xx月を表示 -->
     <h1 id="header"></h1>
 
