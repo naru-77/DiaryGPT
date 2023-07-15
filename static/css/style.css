@@ -81,6 +81,10 @@ a {
    height:auto;
 }
 
+.slider li {
+  text-align: center;
+}
+
 /*slickのJSで書かれるタグ内、スライド左右の余白調整*/
 
 .slider .slick-slide {

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% block extra_css %}
+{% endblock %}
 {% block content %}
 
   <!-- 日記作成 -->
@@ -12,9 +14,11 @@
     head.appendChild(link);
   </script>
 
-  <h1>日記アプリケーション</h1>
-  <a href="{{username}}/create" role="button">新規作成画面</a>
-  <a href="/logout" role="button">ログアウト</a>
+  <h1 class="title">DiaryGPT</h1>
+  <div class="button-group">
+  <a href="{{username}}/create" role="button"class="myButton">新規作成画面</a>
+  <a href="/logout" role="button"class="myButton">ログアウト</a>
+  </div>
   {% if posts!=None %}
   {% for post in posts %}
   <div class="l-wrapper">
@@ -50,7 +54,7 @@
   <!-- 絵をランダムで -->
     <ul class="slider">
       {%for post in posts %}
-      <li><img class="slider-image" src="{{ images_dict[post.post_id] }}" alt=""></li>
+      <li><a href="{{username}}/{{ post.post_id }}/contents"><img class="slider-image" src="{{ images_dict[post.post_id] }}" alt=""></a></li>
       {% endfor %}
     </ul>
     
