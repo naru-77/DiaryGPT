@@ -16,15 +16,25 @@ body {
     font-family: "myfont", sans-serif;
 }
 
-.signup-button {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+.signup ,.login{
+    display: flex;
+    justify-content: center;
 }
 
+.signup-button {
+    /* position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%); */
+    margin-top: 100px;
+}
+
+.login-button-container {
+    display: flex;
+    justify-content: center;
+}
 .login-button {
-    width: 50%;
+    width: 60%;
     margin-top: 20px;
     background-color: hwb(101 5% 56%);
     color: #fff;
@@ -51,7 +61,7 @@ form {
     flex-direction: column;
     width: 500px;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 10%;
 }
 
 label {
