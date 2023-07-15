@@ -31,17 +31,16 @@ python3 -m venv venv
 
 source venv/bin/activate
 
-pip install flask
-
 ### pip の version アップデート
 
 /Users/r.nishino/DiaryGPT/venv/bin/python3 -m pip install --upgrade pip
 
-pip install openai
-
 ### 環境変数を設定
+以下を.envに追加
 
 export OPENAI_API_KEY=''
+
+export STABILITY_SDK_API_KEY=''
 
 ### 必要ライブラリ
 
