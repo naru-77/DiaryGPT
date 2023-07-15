@@ -21,11 +21,12 @@ import base64 # 画像の表示に使う
 load_dotenv()
 
 # .envファイルから環境変数を読み込む
-openai.api_key =  os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる  
+openai.api_key =  os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる 
+ 
 
 # 環境変数の設定設定
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
-os.environ['STABILITY_KEY'] = 'APIキーを入れる'
+os.environ['STABILITY_KEY'] = os.getenv('STABILITY_SDK_API_KEY')
 
 # ここからDB 
 
@@ -198,10 +199,9 @@ def update(post_id,username):
 @app.route('/<username>/<int:post_id>/delete', methods=['GET']) # ユーザー専用削除
 @login_required # アクセス制限
 def delete(post_id,username):
-    posts = Post.query.filter_by(username=username).first()
+    post = Post.query.filter_by(username=username, post_id=post_id).first()
     user = User.query.filter_by(username=username).first()
-    if posts != None:
-        post = posts.query.get(post_id)
+    if post != None:
         user.post_count = user.post_count - 1 # 投稿数を1減らす
         db.session.delete(post)
         db.session.commit()

@@ -97,10 +97,10 @@ a {
    top: 42%;
    cursor: pointer;/*マウスカーソルを指マークに*/
    outline: none;/*クリックをしたら出てくる枠線を消す*/
-   border-top: 2px solid #666;/*矢印の色*/
-   border-right: 2px solid #666;/*矢印の色*/
-   height: 15px;
-   width: 15px;
+   border-top: 3px solid #000000;/*矢印の色*/
+   border-right: 3px solid #000000;/*矢印の色*/
+   height: 30px;
+   width: 30px;
 }
 
 .slick-prev {/*戻る矢印の位置と形状*/
