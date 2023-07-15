@@ -50,6 +50,8 @@ export OPENAI_API_KEY=''
 - sqlite3
 - flask_sqlalchemy
 - flask_login
+- openai
+- stability_sdk
 
 ### db の初期化手順
 
