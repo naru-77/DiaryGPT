@@ -74,7 +74,7 @@ function sendMessage(message) {
         prompt: message,
         date: document.querySelector("#date-form").value,
         // 絵を生成するかどうか
-        image_switch: document.querySelector('input[name="image-switch"]:checked'
+        image_switch: document.querySelector('input[name="gpt_image_switch"]:checked'
         ).value,
       }),
       headers: {

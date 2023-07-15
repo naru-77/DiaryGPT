@@ -21,8 +21,7 @@ import base64 # 画像の表示に使う
 load_dotenv()
 
 # .envファイルから環境変数を読み込む
-openai.api_key =  os.getenv('OPENAI_API_KEY')
-# 以降のopenaiライブラリにはこのAPIを用いる  
+openai.api_key =  os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる  
 
 # 環境変数の設定設定
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
@@ -173,7 +172,7 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
         input_date = request.form.get('date')
-        image_switch = request.form.get('image-switch')
+        image_switch = request.form.get('image_switch')
         
         return registerDiary(username, title, body, input_date, image_switch)
     

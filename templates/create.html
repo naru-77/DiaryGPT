@@ -16,17 +16,14 @@
       <label for="body">内容</label>
       <input type="text" name="body" class="form-control" />
     </div>
-    <input type="submit" value="新規登録" class="btn btn-primary" />
     <div class="image">
       <div class="image-form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="image-switch" value="create" checked />
-        <label class ="image-form-check-label">絵を生成する</label>
+        <input class="form-check-input" type="radio" name="image_switch" value="create" />
+        <label class="image-form-check-label">絵を生成する</label>
       </div>
-      <div class="image-form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="image-switch" value="no-create" />
-        <label class="image-form-check-label">絵を生成しない</label>
-      </div>
-    </div>
+    </div> 
+    <input type="submit" value="新規登録" class="btn btn-primary" />
+
   </form>
 
   <form onsubmit="event.preventDefault(); sendText();" class="mb-3">
@@ -70,13 +67,14 @@
     </div>
     <div class="image">
       <div class="image-form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="image-switch" value="create" checked />
+        <input class="form-check-input" type="radio" name="gpt_image_switch" value="create" checked />
         <label class ="image-form-check-label">絵を生成する</label>
       </div>
       <div class="image-form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="image-switch" value="no-create" />
+        <input class="form-check-input" type="radio" name="gpt_image_switch" value="no-create" />
         <label class="image-form-check-label">絵を生成しない</label>
       </div>
+
     </div>
     <div class="form-check form-check-inline">
       <input
