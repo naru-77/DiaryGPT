@@ -1,6 +1,5 @@
-
 {% extends "base.html" %} {% block content %}
-<link rel="stylesheet" type="text/css" href="/static/css/calendar.css">
+<link rel="stylesheet" type="text/css" href="/static/css/calendar.css" />
 
 <div class="container mt-5">
   <h1 class="mb-4 title">新規登録</h1>
@@ -59,10 +58,30 @@
     </div>
   </form>
 
+  <!-- ローディングのdiv -->
+  <div
+    class="modal"
+    id="loadingModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="conversation" class="border p-3 mb-3">
     <div id="gpt">GPT-3: 今日はどんな1日でしたか？</div>
   </div>
-
 
   <button
     id="end-button"
@@ -72,7 +91,9 @@
     次の質問で終了する
   </button>
 
-  <div><a href="/{{username}}" class="btn btn-link myButton">ホームへ戻る</a></div>
+  <div>
+    <a href="/{{username}}" class="btn btn-link myButton">ホームへ戻る</a>
+  </div>
 </div>
 <script src="/static/javascript/script.js"></script>
 

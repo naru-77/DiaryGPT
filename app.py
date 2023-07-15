@@ -273,8 +273,7 @@ def registerDiary(username, title, body, input_date):
     post = Post(username=username, post_id=user.post_count, title=title, body=body, date=date)
     db.session.add(post)
     db.session.commit()
-    return redirect(f'/{username}')
-
+    return redirect(f'/{username}/{user.post_count}/contents')
 
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
 def summary(username):
