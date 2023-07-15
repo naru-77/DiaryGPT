@@ -160,7 +160,7 @@
     <button class="arrow back_design" id="back-button">前へ</button>
     <div class="change">
       <button class="btn btn-success" onclick="location.href='/{{user.username}}/{{ post_id }}/update'">編集</button>
-      <button class="btn btn-danger" onclick="location.href='/{{user.username}}/{{ post_id }}/delete'">削除</button>
+      <button class="btn btn-danger"><a class="delete" href="javascript:void(0);" onclick="var yes=confirm('本当に削除してよろしいですか'); if (yes) location.href='/{{user.username}}/{{ post_id }}/delete'; return false;">削除</a></button>
     </div>
 
 

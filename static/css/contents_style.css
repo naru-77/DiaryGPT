@@ -257,6 +257,11 @@ body{
   display: flex;
   justify-content: center;
   column-gap: 30px;
+  color: #fff;
+  border-radius: 10px 50px/50px 10px;
+  font-family: "myfont", sans-serif;
+  /* font-weight: bold; */
+  padding: .5em 1em;
 }
 
 
@@ -271,4 +276,9 @@ body{
   /* background: #fff; */
   border-radius: 10px 50px/50px 10px;
   border: dashed 2px #333;
+}
+
+.delete {
+  text-decoration: none;
+  color: #fff;
 }
