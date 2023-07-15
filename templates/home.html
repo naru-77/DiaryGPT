@@ -14,14 +14,14 @@
     head.appendChild(link);
   </script>
 
-  <h1 class="title">DailyGPT</h1>
+  <h1 class="title">DiaryGPT</h1>
   <div class="button-group">
   <a href="{{username}}/create" role="button"class="myButton">新規作成画面</a>
   <a href="/logout" role="button"class="myButton">ログアウト</a>
   </div>
   {% if posts!=None %}
   {% for post in posts %}
-  <div class="l-wrapper">
+  <!-- <div class="l-wrapper">
     <article class="card">
       <div class="card__header">
         <h2 class="card__contents">{{ post.date }}</h2>
@@ -33,7 +33,7 @@
         <p class="card__contents">作成日時: {{ post.created_at }}</p>
       </div>
     </article>
-  </div>
+  </div> -->
   {% endfor %}
   {% endif %}
 
