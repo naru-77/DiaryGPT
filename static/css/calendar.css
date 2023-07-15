@@ -2,10 +2,11 @@
 
 /*全体*/
 .wrapper{
-    max-width: 600px;
     margin: 0 auto;
     color: #666;
+    width: 90vw; /* 画面幅の70% */
 }
+
 #header {
     text-align: center;
     font-size: 24px;
@@ -18,23 +19,57 @@
 #calendar {
     text-align: center;
     width: 100%;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     font-family: "myfont", sans-serif;
 }
-table {
-    outline: 2px solid #ddd;
-    border-collapse: collapse;
-    width: 100%;
-}
-th {
+
+
+td {
     color: #000;
+    vertical-align: top; /* テキストを上に寄せる */
+    text-align: left; /* テキストを左に寄せる */
+    font-size: 0.8em; /* フォントサイズを小さくする */
+    padding: 0.5em; /* 内側の余白を設定（適宜調整） */
 }
+
 th, td {
     outline: 1px solid #ddd;
     padding-top: 10px;
     padding-bottom: 10px;
-    text-align: center;
+} 
+
+
+.cell-content {
+    min-height: 95px;
 }
+
+
+/* テーブル（カレンダー本体）のスタイル設定 */
+#calendar table {
+    width: 100%; /* 親要素（.wrapper）の幅に合わせる */
+    table-layout: fixed; /* 列幅を均一にする */
+    outline: 2px solid #ddd;
+}
+
+日付のスタイル設定
+#calendar td {
+    vertical-align: top; /* テキストを上に寄せる */
+    font-size: 0.8em; /* フォントサイズを小さくする */
+    padding: 0.5em; /* 内側の余白を設定（適宜調整） */
+    background-color: #fff;
+} 
+
+
+/* 無効な日付（先月・来月）のスタイル設定 */
+#calendar td.disabled {
+    color: #cccccc; /* テキストカラーを設定（適宜変更） */
+}
+
+/* ヘッダーとボタンのスタイル設定 */
+#header, #next-prev-button {
+    text-align: center; /* テキストを中央寄せにする */
+} */
+
 /*日曜日*/
 td:first-child {
     color: red;

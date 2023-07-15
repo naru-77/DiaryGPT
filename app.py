@@ -56,7 +56,6 @@ class Post(db.Model):
             'title': self.title,
             'post_id': self.post_id
         }
-    
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -289,7 +288,7 @@ def title_chatgpt(prompt): # タイトルをつける
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "以下の情報を用いて、日記のタイトルを書いてください。10文字程度の体言止めで、見やすさと分かりやすさに気をつけて作ってください。"},{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": "以下の情報を用いて、日記のタイトルを書いてください。10文字程度の体言止めで、見やすさと分かりやすさに気をつけて作ってください。「」やタイトルという文字は絶対に入れないでください。"},{"role": "user", "content": prompt}]
     )
 
     # GPTの応答をリストに追加
@@ -345,20 +344,38 @@ def summary(username):
     image_switch = request.form.get('image_switch')
     
     messages.append({"role": "user", "content": prompt})
+    same_date_judge = date_exists_in_db(username, input_date)
 
-    diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
-    diary_response = summary_chatgpt(diary_messages) # 日記を作成
-    diary_title = title_chatgpt(diary_response) # タイトル生成
+    if (same_date_judge):
+        return redirect(f'/{username}/create')
+    else:
+        messages.append({"role": "user", "content": prompt})
 
-     # GPTの記憶をリセット
-    messages = [
-    {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
-    {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
-    ]
+        diary_messages = messages[1:]  # 日記作成に使用するメッセージを取得（最初のシステムメッセージを除く）
+        diary_response = summary_chatgpt(diary_messages) # 日記を作成
+        diary_title = title_chatgpt(diary_response) # タイトル生成
+
+        messages = [
+            {"role": "system", "content": "あなたはプロのインタビュアーです。ユーザの一日を雑誌に載せることになりました。その雑誌を読んでいる人がより面白くなるように話を引き出してください。短い質問を1つだけしてください。絶対に2つ質問しないでください。ユーザに対しての共感コメントは絶対につけないでください。質問だけでいいです。"},
+            {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
+            ] # GPTの記憶をリセット
     
-    input_date = request.form.get('date')
-    
-    return registerDiary(username, diary_title, diary_response, input_date, image_switch)
+        return registerDiary(username, diary_title, diary_response, input_date, image_switch)
+
+
+def date_exists_in_db(username, input_date):
+    # 日付の形式が正しいことを確認
+    if re.match(r'\d{4}-\d{2}-\d{2}', input_date):
+        date = datetime.datetime.strptime(input_date, '%Y-%m-%d').date()
+    else:
+        return False  # 日付の形式が不正な場合、Falseを返す
+
+    # Postテーブルから指定したユーザー名と日付に一致するレコードを探す
+    post = Post.query.filter_by(username=username, date=date).first()
+
+    # レコードが存在すればTrue、存在しなければFalseを返す
+    return post is not None
+
 
 
 

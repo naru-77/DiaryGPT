@@ -44,12 +44,15 @@ function questionGpt(speech) {
       addGptText(gpt_response);
 
       if ("speechSynthesis" in window) {
-        const msg = new SpeechSynthesisUtterance();
-        msg.text = gpt_response;
-        msg.lang = "ja-JP";
-        msg.rate = 0.9;
-        msg.pitch = 1.2;
-        speechSynthesis.speak(msg);
+        // ラジオボタンの選択値によって読み上げを制御
+        if (document.getElementById("read_aloud").checked) {
+          const msg = new SpeechSynthesisUtterance();
+          msg.text = gpt_response;
+          msg.lang = "ja-JP";
+          msg.rate = 0.9;
+          msg.pitch = 1.2;
+          speechSynthesis.speak(msg);
+        }
       }
     })
     .catch((e) => {
@@ -82,14 +85,12 @@ function sendMessage(message) {
         endOnNextQuestion = false; // リセット
         $("#loadingModal").modal("hide"); // ローディングポップアップを非表示
         console.log("ローディング終了");
-        if (response.redirected) {
-          window.location.href = response.url; // リダイレクトされた場合、そのURLに遷移
-        }
+        window.location.href = response.url; //fetchを使うとバックエンドでリダイレクトできないので、フロントでリダイレクト
       })
       .catch((error) => {
         console.error(error);
         $("#loadingModal").modal("hide"); // ローディングポップアップを非表示
-        console.log("エラーでローディング終了");
+        console.log("fetchエラーでローディング終了");
       });
   } else {
     questionGpt(message); //gptの回答をdiv要素で追加
