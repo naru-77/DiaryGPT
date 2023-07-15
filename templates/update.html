@@ -8,16 +8,21 @@
     <div class="background-container flex-container">
         <div class="content">
             <form method="POST">
-                <h2 class="date">{{ post.date }}</h2>
+                <h2 class="date">{{ post.date.strftime("%Y年%#m月%#d日") }}</h2>
                 <div class="update_title">
-                    <label for="title"></label>
-                    <input type="text" name="title" value={{ post.title }}>
+                    <label for="title">タイトル</label>
+                    <input type="text" name="title" value="{{ post.title }}">
                 </div>
-                <label for="body"></label>
-                <textarea name="body" class="update_container">{{ post.body }}</textarea>
-                <input type="submit" value="更新"class="login-button">
+                <div class="body">
+                    <label for="body">内容</label>
+                    <textarea name="body" class="update_container">{{ post.body }}</textarea>
+                </div>
+  
+                <input type="submit" value="更新" class="login-button">
             </form>
         </div>
     </div>
 </div>
+<span id="pen"><img class="pen_img" src="/static/css/img/pen.png" alt=""></span>
+<span id="kesigomu"><img class="kesigomu_img" src="/static/css/img/kesigomu.png" alt=""></span>
 {% endblock %}

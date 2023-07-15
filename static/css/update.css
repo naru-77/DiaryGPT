@@ -1,18 +1,64 @@
-.update_title {
+.update_title input {
     text-align: center;
+    width: 100%;
+    height: auto;
+  }
+
+  .update_title {
+    width: 400px;
+    height: 80px;
+    margin: 0 auto;
+  }
+
+  .body {
+    width: 100%;
+    height: 60vh;
   }
 
 .update_container {
-    width: 400px;
-    height: 400px;
+    width: 100%;
+    height: 100%;
     white-space: pre-wrap; /* 入力された改行や空白スペースを保持 */
     overflow-wrap: break-word; /* 長い単語が行の終わりに来た場合に自動で改行 */
 }
 
 .background-container.flex-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   /* 必要に応じて以下の高さを調整 */
   height: 100vh; 
+}
+
+.login-button {
+  width: 100%;
+  background-color: #3c8aff;
+}
+
+
+/* 鉛筆 */
+#pen {
+  display: block;
+  position: absolute;
+  bottom: -160px;
+  right: 30px;
+  width: auto;
+  max-height: 50%;
+}
+
+.pen_img{
+  width: 100%;
+  height: 100%;
+}
+
+/* 消しゴム */
+#kesigomu {
+  display: block;
+  position: absolute;
+  bottom: -100px;
+  left: 30px;
+  width: auto;
+  max-height: 50%;
+}
+
+.kesigomu_img{
+  width: 100%;
+  height: 100%;
 }
