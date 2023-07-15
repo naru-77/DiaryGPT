@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
+<link rel="stylesheet" href="/static/css/contents_style.css">
+<link rel="stylesheet" href="/static/css/update.css">
+
 <h1>編集画面</h1>
-<form method="POST">
-    <h1>{{ post.date }}</h1>
-    <label for="title">タイトル</label>
-    <input type="text" name="title" value={{ post.title }}>
-    <label for="body">内容</label>
-    <input type="text" name="body" value={{ post.body }}>
-    <input type="submit" value="更新">
-</form>
+<div class="view">
+    <div class="background-container">
+        <div class="content">
+            <form method="POST">
+                <h2 class="date">{{ post.date }}</h2>
+                <div class="update_title">
+                    <label for="title"></label>
+                    <input type="text" name="title" value={{ post.title }}>
+                </div>
+                <label for="body"></label>
+                <input type="text" name="body" class="update_container" value={{ post.body }}>
+                <input type="submit" value="更新"class="login-button">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

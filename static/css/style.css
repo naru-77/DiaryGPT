@@ -27,18 +27,17 @@ h1 {
 /*--------------------------------------
   カード型
 --------------------------------------*/
-.l-wrapper {
+/* .l-wrapper {
   margin: 1rem 0;
   width: 380px;
   overflow: hidden;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-
 
 .card {
   background-color: #fff;
-  box-shadow: 0 0 0px rgba(0, 0, 0, .16);
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.16);
   color: #212121;
   text-decoration: none;
 }
@@ -53,7 +52,6 @@ h1 {
   font-size: 1.6rem;
   order: 1;
   font-weight: bold;
-
 }
 
 .card__contents {
@@ -61,7 +59,6 @@ h1 {
   font-size: 0.8rem;
   order: 1;
 }
-
 a {
   text-decoration: none;
 }
@@ -154,4 +151,27 @@ ul{
  margin:0;
  padding: 0;
  list-style: none;
+}
+
+
+/*--------------------------------------
+  ローディング
+--------------------------------------*/
+
+#loadingModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8) url("http://i.stack.imgur.com/FhHRx.gif")
+    50% 50% no-repeat;
+}
+body.loading {
+  overflow: hidden;
+}
+body.loading #loadingModal {
+  display: block;
 }

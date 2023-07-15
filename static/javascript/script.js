@@ -62,6 +62,8 @@ function sendMessage(message) {
 
   if (endOnNextQuestion) {
     const username = document.body.dataset.username;
+    $("#loadingModal").modal("show"); // ローディングポップアップを表示
+    console.log("ローディング表示");
 
     fetch("/" + username + "/summary", {
       method: "POST",
@@ -73,12 +75,18 @@ function sendMessage(message) {
         "Content-Type": "application/x-www-form-urlencoded",
       },
     })
-      .then(() => {
-        window.location.href = "/" + username; // リダイレクト
+      .then((response) => {
         endOnNextQuestion = false; // リセット
+        $("#loadingModal").modal("hide"); // ローディングポップアップを非表示
+        console.log("ローディング終了");
+        if (response.redirected) {
+          window.location.href = response.url; // リダイレクトされた場合、そのURLに遷移
+        }
       })
       .catch((error) => {
         console.error(error);
+        $("#loadingModal").modal("hide"); // ローディングポップアップを非表示
+        console.log("エラーでローディング終了");
       });
   } else {
     questionGpt(message); //gptの回答をdiv要素で追加
