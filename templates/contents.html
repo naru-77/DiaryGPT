@@ -84,11 +84,13 @@
             <div class="title">
               <h1>{{  posts[current_index-1].title }}</h1>
             </div>
+
             {% if images_dict[posts[current_index-1].post_id]!= None %}
             <div class="picture">
               <img src="{{ images_dict[posts[current_index-1].post_id] }}" alt="Generated Image">
-            {% endif %}
             </div>
+            {% endif %}
+            
             <div class="container">
               <div class="content">{{  posts[current_index-1].body }}</div>
             </div>
@@ -150,7 +152,7 @@
     {% endif %}
     {% endif %}
     {% endfor %}
-      </div>
+    </div>
       <span id="pen"><img class="pen_img" src="/static/css/img/pen.png" alt=""></span>
       <span id="kesigomu"><img class="kesigomu_img" src="/static/css/img/kesigomu.png" alt=""></span>
       <!-- <img src="https://beiz.jp/images_L/paper/paper_00041.jpg" alt="" class="back"> -->
@@ -159,8 +161,8 @@
     <button class="arrow next_design" id="next-button">次へ</button>
     <button class="arrow back_design" id="back-button">前へ</button>
     <div class="change">
-      <button class="btn btn-success" onclick="location.href='/{{user.username}}/{{ post_id }}/update'">編集</button>
-      <button class="btn btn-danger"><a class="delete" href="javascript:void(0);" onclick="var yes=confirm('本当に削除してよろしいですか'); if (yes) location.href='/{{user.username}}/{{ post_id }}/delete'; return false;">削除</a></button>
+      <button class="update_btn" onclick="location.href='/{{user.username}}/{{ post_id }}/update'">編集</button>
+      <button class="delete_btn"><a class="delete" href="javascript:void(0);" onclick="var yes=confirm('本当に削除してよろしいですか'); if (yes) location.href='/{{user.username}}/{{ post_id }}/delete'; return false;">削除</a></button>
     </div>
 
 
