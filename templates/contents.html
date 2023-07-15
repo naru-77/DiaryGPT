@@ -44,18 +44,22 @@
       </div>
 
       <div class="content">
-        <div class="date">
-          <p>{{ posts[posts_length-1].date.strftime("%Y年%#m月%#d日") }}</p>
-        </div>
-        <div class="title">
-          <h1>{{ posts[posts_length-1].title }}</h1>
-        </div>
-        {% if images_dict[posts[posts_length-1].post_id]!= None %}
-        <div class="picture">
-          <img
-            src="{{ images_dict[posts[posts_length-1].post_id] }}"
-            alt="Generated Image"
-          />
+
+            <div class="date">
+              <p>{{ posts[posts_length-1].date.strftime("%Y年%#m月%#d日") }}</p>
+            </div>
+            <div class="title">
+              <h1>{{ posts[posts_length-1].title }}</h1>
+            </div>
+            {% if images_dict[posts[posts_length-1].post_id]!= None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[posts_length-1].post_id] }}" alt="Generated Image">
+            </div>
+            {% endif %}
+            <div class="container">
+              <div class="content">{{ posts[posts_length-1].body }}</div>
+            </div>
+          </div>
         </div>
         {% endif %}
         <div class="container">
@@ -64,17 +68,16 @@
       </div>
     </div>
     {% else %}
-    <div
-      class="background-container past"
-      id="{{ posts[current_index-1].post_id }}"
-    >
-      <div class="content">
-        <div class="date">
-          <p>{{ posts[current_index-1].date.strftime("%Y年%#m月%#d日") }}</p>
-        </div>
-        <div class="title">
-          <h1>{{ posts[current_index-1].title }}</h1>
-        </div>
+    <div class="background-container past" id="{{ posts[current_index-1].post_id }}">
+  
+          <div class="content">
+  
+            <div class="date">
+              <p>{{ posts[current_index-1].date.strftime("%Y年%#m月%#d日") }}</p>
+            </div>
+            <div class="title">
+              <h1>{{  posts[current_index-1].title }}</h1>
+            </div>
 
         <div class="container">
           <div class="content">{{ posts[current_index-1].body }}</div>
@@ -86,23 +89,25 @@
     <!-- 次のページ -->
     {% if current_index == posts_length -1 %}
     <div class="background-container next" id="{{ posts[0].post_id }}">
-      <div class="content">
-        <div class="date">
-          <p>{{ posts[0].date.strftime("%Y年%#m月%#d日") }}</p>
-        </div>
-        <div class="title">
-          <h1>{{ posts[0].title }}</h1>
-        </div>
-        {% if images_dict[posts[0].post_id] != None %}
-        <div class="picture">
-          <img
-            src="{{ images_dict[posts[0].post_id] }}"
-            alt="Generated Image"
-          />
-        </div>
-        {% endif %}
-        <div class="container">
-          <div class="content">{{ posts[0].body }}</div>
+  
+          <div class="content">
+  
+            <div class="date">
+              <p>{{ posts[0].date.strftime("%Y年%#m月%#d日") }}</p>
+            </div>
+            <div class="title">
+              <h1>{{ posts[0].title }}</h1>
+            </div>
+            {% if images_dict[posts[0].post_id] != None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[0].post_id] }}" alt="Generated Image">
+            </div>
+            {% endif %}
+            <div class="container">
+              <div class="content">{{ posts[0].body }}</div>
+            </div>
+  
+          </div>
         </div>
       </div>
 
