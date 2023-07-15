@@ -11,10 +11,23 @@ import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
 from werkzeug.security import generate_password_hash, check_password_hash
 import re #正規表現
+import io
+from PIL import Image
+from stability_sdk import client
+import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
+import math
+import base64 # 画像の表示に使う
 
-load_dotenv()  # .envファイルから環境変数を読み込む
-openai.api_key = os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる
-# ここからDB
+load_dotenv()
+
+# .envファイルから環境変数を読み込む
+openai.api_key =  os.getenv('OPENAI_API_KEY') # 以降のopenaiライブラリにはこのAPIを用いる  
+
+# 環境変数の設定設定
+os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
+os.environ['STABILITY_KEY'] = 'APIキーを入れる'
+
+# ここからDB 
 
 
 
@@ -34,6 +47,7 @@ class Post(db.Model):
     body = db.Column(db.String(300), nullable=False)
     date = db.Column(db.Date, nullable=False, default=datetime.date.today(), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now(pytz.timezone('Asia/Tokyo')).replace(second=0, microsecond=0)) # 時間の秒以下を無視
+    picture = db.Column(db.LargeBinary, default=None)  # 画像のバイナリデータを保存する列
 
     def serializeForCal(self):
         return {
@@ -66,13 +80,28 @@ def go_login():
 @app.route('/<username>', methods=['GET', 'POST'])
 @login_required # アクセス制限
 def home(username):
-    if request.method == 'GET':
-        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
+    posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
 
-        return render_template('home.html', posts=posts, username=username)
-    else:
-        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
-        return render_template('home.html', posts=posts, username=username)
+    #絵の取得
+    images_dict = {}  
+    # random性を持たせるのをやめた
+    # nums = list(range(1, user.post_count + 1))  # 範囲の数列を作成
+    # random.shuffle(nums)  # 数列をシャッフル
+    picture_posts_id = []
+    for post in posts:
+        if post.picture != None:
+            # バイナリデータをImageオブジェクトに変換
+            image = Image.open(io.BytesIO(post.picture))
+            # 画像データをデータURI形式に変換する
+            image_uri = image_to_data_uri(image)
+            # 画像のuriとpost_idを紐づけ
+            images_dict[post.post_id] = image_uri
+            picture_posts_id.append(post.post_id) # 画像を持つpostを追加
+
+    return render_template('home.html', picture_posts_id=picture_posts_id, username=username,images_dict=images_dict)
+
+        
+
 
 
 @app.route('/cal', methods=['POST']) # カレンダーからの要求への応答
@@ -143,8 +172,9 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
         input_date = request.form.get('date')
-
-        return registerDiary(username, title, body, input_date)
+        image_switch = request.form.get('image_switch')
+        
+        return registerDiary(username, title, body, input_date, image_switch)
     
     else:
         return render_template('create.html', username=username)
@@ -153,7 +183,7 @@ def create(username):
 @login_required # アクセス制限
 def update(post_id,username):
     posts = Post.query.filter_by(username=username).first()
-    if(posts != None):
+    if posts != None:
         post = posts.query.get(post_id)
     
         if request.method == 'GET':
@@ -170,7 +200,7 @@ def update(post_id,username):
 def delete(post_id,username):
     posts = Post.query.filter_by(username=username).first()
     user = User.query.filter_by(username=username).first()
-    if(posts != None):
+    if posts != None:
         post = posts.query.get(post_id)
         user.post_count = user.post_count - 1 # 投稿数を1減らす
         db.session.delete(post)
@@ -181,14 +211,36 @@ def delete(post_id,username):
 @login_required # アクセス制限
 def contents(post_id,username):
     user = User.query.filter_by(username=username).first() # ユーザー名でフィルターをかける
-    if(post_id==0): # 最も古いものから最も新しいものへ
-        return redirect(f'/{username}/{user.post_count}/contents')
-    elif(post_id==user.post_count+1): # 最も新しいものから最も古いものへ
-        return redirect(f'/{username}/{1}/contents')  
-    else:
-        posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
-        return render_template('contents.html', posts=posts, user=user,post_id=post_id)
+    posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得
+    # if(post_id==posts[0].post_id): # 最も古いものから最も新しいものへ
+    #     return redirect(f'/{username}/{user.post_count}/contents')
+    # elif(post_id==posts[len(posts)-1].post_id): # 最も新しいものから最も古いものへ
+    #     return redirect(f'/{username}/{1}/contents')  
 
+   
+    images_dict = {}
+    
+    for post in posts:
+        if post.picture != None:
+            # バイナリデータをImageオブジェクトに変換
+            image = Image.open(io.BytesIO(post.picture))
+            # 画像データをデータURI形式に変換する
+            image_uri = image_to_data_uri(image)
+            # 画像のuriとpost_idを紐づけ
+            images_dict[post.post_id] = image_uri
+        else:
+            # 画像がない場合
+            images_dict[post.post_id] = None
+
+    return render_template('contents.html', posts=posts, user=user,post_id=post_id, images_dict=images_dict)
+
+
+
+def image_to_data_uri(image):
+    data = io.BytesIO()
+    image.save(data, format='PNG')
+    data_uri = 'data:image/png;base64,' + base64.b64encode(data.getvalue()).decode('utf-8')
+    return data_uri
 
 # ここからGPT
 
@@ -254,7 +306,7 @@ def gpt():
         return str(e), 500
 
 
-def registerDiary(username, title, body, input_date):
+def registerDiary(username, title, body, input_date, image_switch): # データベースに日記を登録
     #日付の取得と整合性のチェック
     if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
         date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
@@ -264,21 +316,37 @@ def registerDiary(username, title, body, input_date):
     #既に同じ日に日記があった場合
     #こことdateのuniqueをコメントアウトすれば複数登録できるようになる
     if(Post.query.filter_by(username=username, date=date).first()):
-        return redirect('/{username}/create') #これだと書いた内容が消えちゃうので余裕あれば直したい
-
+        return redirect(f'/{username}/create') #これだと書いた内容が消えちゃうので余裕あれば直したい
+    
+    if image_switch == "create":
+        picture = create_img(body) # 絵の生成
+    else:
+        picture = None
+        
     user = User.query.filter_by(username=username).first()
     user.post_count += 1  # 投稿数を1増やす
-
-    post = Post(username=username, post_id=user.post_count, title=title, body=body, date=date)
+    posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得   
+    
+    # 新しいdb追加
+    if len(posts) == 0:
+        latest_post_id = 1
+    else:
+        latest_post_id = posts[len(posts)-1].post_id +1 # 最新のpost_id
+        
+    post = Post(username=username ,post_id=latest_post_id, title=title, body=body, date=date, picture = picture)
     db.session.add(post)
     db.session.commit()
-    return redirect(f'/{username}/{user.post_count}/contents')
+    return redirect(f'/{username}/{latest_post_id}/contents')
+
 
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
 def summary(username):
-    global messages  # messages をグローバル変数として宣言
+    global messages  # messages をグローバル変数として宣言 chatgptの記憶
     prompt = request.form.get('prompt')
     input_date = request.form.get('date')
+    image_switch = request.form.get('image_switch')
+    
+    messages.append({"role": "user", "content": prompt})
     same_date_judge = date_exists_in_db(username, input_date)
 
     if (same_date_judge):
@@ -295,7 +363,7 @@ def summary(username):
             {"role": "system", "content": "最初は「今日はどんな一日でしたか？」という質問をしました。"},
             ] # GPTの記憶をリセット
     
-        return registerDiary(username, diary_title, diary_response, input_date)
+        return registerDiary(username, diary_title, diary_response, input_date, image_switch)
 
 
 def date_exists_in_db(username, input_date):
@@ -313,5 +381,49 @@ def date_exists_in_db(username, input_date):
 
 
 
+
+
+# 絵を生成する
+def create_img(prompt):
+    # APIインタフェースの準備
+    stability_api = client.StabilityInference(
+        key=os.environ['STABILITY_KEY'], 
+        verbose=True,
+    )
+    # chatgptが絵を生成するためのプロンプト生成
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": "以下の情報を用いて、その情報を表す手書きで書かれたような絵を生成するようなプロンプトを英語で出してください。プロンプトのみの出力でいいです。"},
+        {"role": "user", "content": prompt}]
+    )
+
+    width = 500
+    height = 350
+
+    adjusted_width = math.ceil(width / 64) * 64 # 64の倍数にしなくてはならない
+    adjusted_height = math.ceil(height / 64) * 64 # 64の倍数にしなくてはならない
+
+    # テキストからの画像生成
+    answers = stability_api.generate(
+        prompt=response.choices[0].message.content.strip(), # プロンプト
+        height=adjusted_height,  # 生成される画像の高さを指定
+        width=adjusted_width,  # 生成される画像の幅を指定
+    )
+
+    # 結果の出力
+    for resp in answers:
+        for artifact in resp.artifacts:
+            if artifact.finish_reason == generation.FILTER:
+                print("NSFW")
+            if artifact.type == generation.ARTIFACT_IMAGE:
+                img = Image.open(io.BytesIO(artifact.binary))
+                buffer = io.BytesIO()
+                img.save(buffer, format='PNG')
+                buffer.seek(0)
+                return buffer.getvalue() # 生成された絵をバイナリデータで返す
+    
+            
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)   
+

@@ -50,6 +50,18 @@
     <!-- カレンダー -->
     <div id="calendar"></div>
   </div>
+  <div class="gallery">
+  <!-- 絵をランダムで -->
+    <ul class="slider">
+      {%for post_id in picture_posts_id %}
+      <li><a href="{{username}}/{{ post_id }}/contents"><img class="slider-image" src="{{ images_dict[post_id] }}" alt=""></a></li>
+      {% endfor %}
+    </ul>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="/static/javascript/home_script.js"></script>
+  </div>
 
 {% endblock %}
 

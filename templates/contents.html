@@ -14,146 +14,153 @@
     <div class="back_home"><a href="/{{user.username}}" class="myButton">ホームへ戻る</a></div>
     <div class="view">
       <!-- for文でループさせてurlに対応する投稿を持ってくる -->
+    {% set posts_length = posts|length %}
     {% for post in posts %}
+    {% set current_index = loop.index0 %}
+    <!-- 現在のページのpost_idと一致 -->
     {% if post.post_id == post_id %}
 
       <!-- 現在のページ -->
-      <div class="now_diary">
-        <div class="background-container now" id="{{ post_id }}">
-  
-          <div class="content">
-  
-            <div class="date">
-              <p>{{ post.created_at }}</p>
-            </div>
-            <div class="title">
-              <h1>{{ post.title }}</h1>
-            </div>
-  
-            <div class="container">
-              <div class="content">{{ post.body }}</div>
-            </div>
-  
-          </div>
-  
-        </div>
-      </div>
-    {% endif %}
 
-
-    <!-- 前のページ -->
-    {% set past_post = post_id - 1 %}
-    {% if post.post_id == past_post %}
-      <div class="past_diary">
-        <div class="background-container past" id="{{ post_id-1 }}">
+      <div class="background-container now" id="{{ post_id }}">
   
-          <div class="content">
-  
-            <div class="date">
-              <p>{{ post.created_at }}</p>
-            </div>
-            <div class="title">
-              <h1>{{ post.title }}</h1>
-            </div>
-  
-            <div class="container">
-              <div class="content">{{ post.body }}</div>
-            </div>
-  
-          </div>
-  
-        </div>
-      </div>
-      <!-- 例外処理 -->
-    {% elif past_post == 0 %}
-      {% for post in posts %}
-      {% if post.post_id == user.post_count %}
-    <div class="past_diary">
-      <div class="background-container past" id="{{ user.post_count }}">
-
         <div class="content">
-
+  
           <div class="date">
             <p>{{ post.created_at }}</p>
           </div>
           <div class="title">
             <h1>{{ post.title }}</h1>
           </div>
-
+          {% if images_dict[post_id]!= None %}
+          <div class="picture">
+            <img src="{{ images_dict[post_id] }}" alt="Generated Image">
+          </div>
+          {% endif %}
+  
           <div class="container">
             <div class="content">{{ post.body }}</div>
           </div>
-
+  
         </div>
-
+  
       </div>
-    </div>
-      {% endif %}
-      {% endfor %}
+      
+ 
+
+
+    <!-- 前のページ -->
+    <!-- 現在のページの前となるページを見つける -->
+    <!-- 最初のページだった場合 -->
+    {% if current_index == 0 %}
+        <div class="background-container past" id="{{ posts[posts_length-1].post_id }}">
+
+          <div class="content">
+
+            <div class="date">
+              <p>{{ posts[posts_length-1].created_at }}</p>
+            </div>
+            <div class="title">
+              <h1>{{ posts[posts_length-1].title }}</h1>
+            </div>
+            {% if images_dict[posts[posts_length-1].post_id]!= None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[posts_length-1].post_id] }}" alt="Generated Image">
+            </div>
+            {% endif %}
+            <div class="container">
+              <div class="content">{{ posts[posts_length-1].body }}</div>
+            </div>
+          </div>
+        </div>
+    {% else %}
+        <div class="background-container past" id="{{ posts[current_index-1].post_id }}">
+  
+          <div class="content">
+  
+            <div class="date">
+              <p>{{  posts[current_index-1].created_at }}</p>
+            </div>
+            <div class="title">
+              <h1>{{  posts[current_index-1].title }}</h1>
+            </div>
+            {% if images_dict[posts[current_index-1].post_id]!= None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[current_index-1].post_id] }}" alt="Generated Image">
+            {% endif %}
+            </div>
+            <div class="container">
+              <div class="content">{{  posts[current_index-1].body }}</div>
+            </div>
+  
+          </div>
+        </div>
     {% endif %}
 
  <!-- 次のページ -->
-    {% set next_post = post_id + 1 %}
-    {% if post.post_id == next_post %}
-      <div class="next_diary">
-        <div class="background-container next" id="{{ post.post_id }}">
+    {% if current_index == posts_length -1 %}
+        <div class="background-container next" id="{{ posts[0].post_id }}">
   
           <div class="content">
   
             <div class="date">
-              <p>{{ post.created_at }}</p>
+              <p>{{ posts[0].created_at }}</p>
             </div>
             <div class="title">
-              <h1>{{ post.title }}</h1>
+              <h1>{{ posts[0].title }}</h1>
             </div>
-  
+            {% if images_dict[posts[0].post_id] != None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[0].post_id] }}" alt="Generated Image">
+            </div>
+            {% endif %}
             <div class="container">
-              <div class="content">{{ post.body }}</div>
+              <div class="content">{{ posts[0].body }}</div>
             </div>
   
           </div>
   
         </div>
-      </div>
+
       <!-- 例外処理 -->
-    {% elif next_post == user.post_count+1 %}
-      {% for post in posts %}
-      {% if post.post_id == 1 %}
-      <div class="next_diary">
-        <div class="background-container next" id="1">
+    {% else %}
+        <div class="background-container next" id="{{posts[current_index+1].post_id}}">
   
           <div class="content">
   
             <div class="date">
-              <p>{{ post.created_at }}</p>
+              <p>{{ posts[current_index+1].created_at }}</p>
             </div>
             <div class="title">
-              <h1>{{ post.title }}</h1>
+              <h1>{{ posts[current_index+1].title }}</h1>
             </div>
-  
+            {% if images_dict[posts[current_index+1].post_id] != None %}
+            <div class="picture">
+              <img src="{{ images_dict[posts[current_index+1].post_id] }}" alt="Generated Image">
+            </div>
+            {% endif %}
             <div class="container">
-              <div class="content">{{ post.body }}</div>
+              <div class="content">{{ posts[current_index+1].body }}</div>
             </div>
   
           </div>
   
         </div>
-      </div>
-      {% endif %}
-      {% endfor %}
+
+    {% endif %}
     {% endif %}
     {% endfor %}
-
+      </div>
       <span id="pen"><img class="pen_img" src="/static/css/img/pen.png" alt=""></span>
       <span id="kesigomu"><img class="kesigomu_img" src="/static/css/img/kesigomu.png" alt=""></span>
       <!-- <img src="https://beiz.jp/images_L/paper/paper_00041.jpg" alt="" class="back"> -->
-    </div>
+    
 
     <button class="arrow next_design" id="next-button">次へ</button>
     <button class="arrow back_design" id="back-button">前へ</button>
     <div class="change">
-      <a href="/{{user.username}}/{{ post_id }}/update" role="button" class="card__contents myButton">編集</a>
-      <a href="/{{user.username}}/{{ post_id }}/delete" role="button" class="card__contents myButton">削除</a>
+      <button class="btn btn-success" onclick="location.href='/{{user.username}}/{{ post_id }}/update'">編集</button>
+      <button class="btn btn-danger" onclick="location.href='/{{user.username}}/{{ post_id }}/delete'">削除</button>
     </div>
 
 

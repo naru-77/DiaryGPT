@@ -1,5 +1,5 @@
 //音声入力ボタンを取得
-const button = document.querySelector(".btn.btn-primary");
+const button =  document.getElementById("speak-button");
 //会話を追記していく領域を取得
 const conversation = document.querySelector("#conversation");
 let endOnNextQuestion = false; //次の質問で終了するかどうか
@@ -73,6 +73,9 @@ function sendMessage(message) {
       body: new URLSearchParams({
         prompt: message,
         date: document.querySelector("#date-form").value,
+        // 絵を生成するかどうか
+        image_switch: document.querySelector('input[name="gpt_image_switch"]:checked'
+        ).value,
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
