@@ -5,7 +5,7 @@ from sqlalchemy import extract
 import datetime  
 from datetime import timedelta
 import pytz
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
@@ -18,15 +18,15 @@ import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import math
 import base64 # 画像の表示に使う
 
-# load_dotenv()
+load_dotenv()
 
 # .envファイルから環境変数を読み込む
-openai.api_key =  "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"
-# 以降のopenaiライブラリにはこのAPIを用いる os.getenv('OPENAI_API_KEY')
+openai.api_key =  os.getenv('OPENAI_API_KEY')
+# 以降のopenaiライブラリにはこのAPIを用いる 
 
 # 環境変数の設定設定
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
-os.environ['STABILITY_KEY'] = 'sk-WXXLDsWPn5NiAlVuE6h6yXvk6nHN2hzyjORsNMjRcPDhDXd0'
+os.environ['STABILITY_KEY'] = 'APIキーを入れる'
 
 # ここからDB 
 
@@ -91,7 +91,7 @@ def home(username):
     # random.shuffle(nums)  # 数列をシャッフル
     picture_posts_id = []
     for post in posts:
-        if(post.picture != None):
+        if post.picture != None:
             # バイナリデータをImageオブジェクトに変換
             image = Image.open(io.BytesIO(post.picture))
             # 画像データをデータURI形式に変換する
@@ -174,7 +174,7 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
         input_date = request.form.get('date')
-        image_switch = request.form.get('image_switch')
+        image_switch = request.form.get('image-switch')
         
         return registerDiary(username, title, body, input_date, image_switch)
     
@@ -185,7 +185,7 @@ def create(username):
 @login_required # アクセス制限
 def update(post_id,username):
     posts = Post.query.filter_by(username=username).first()
-    if(posts != None):
+    if posts != None:
         post = posts.query.get(post_id)
     
         if request.method == 'GET':
@@ -202,7 +202,7 @@ def update(post_id,username):
 def delete(post_id,username):
     posts = Post.query.filter_by(username=username).first()
     user = User.query.filter_by(username=username).first()
-    if(posts != None):
+    if posts != None:
         post = posts.query.get(post_id)
         user.post_count = user.post_count - 1 # 投稿数を1減らす
         db.session.delete(post)
@@ -223,7 +223,7 @@ def contents(post_id,username):
     images_dict = {}
     
     for post in posts:
-        if(post.picture != None):
+        if post.picture != None:
             # バイナリデータをImageオブジェクトに変換
             image = Image.open(io.BytesIO(post.picture))
             # 画像データをデータURI形式に変換する
@@ -320,7 +320,7 @@ def registerDiary(username, title, body, input_date, image_switch): # データ�
     if(Post.query.filter_by(username=username, date=date).first()):
         return redirect(f'/{username}/create') #これだと書いた内容が消えちゃうので余裕あれば直したい
     
-    if(image_switch == "create"):
+    if image_switch == "create":
         picture = create_img(body) # 絵の生成
     else:
         picture = None

@@ -71,8 +71,8 @@ function sendMessage(message) {
         prompt: message,
         date: document.querySelector("#date-form").value,
         // 絵を生成するかどうか
-        image_switch: document.querySelector('input[name="voice-lang"]:checked'
-        ).value
+        image_switch: document.querySelector('input[name="image-switch"]:checked'
+        ).value,
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -31,7 +31,6 @@ next_button.addEventListener("click", function() {
   pen.style.display = "none";
   kesigomu.style.display = "none";
   change.style.display = "none";
-  console.log(nextid);
   // アニメーション終了後
   nowContainer.addEventListener("animationend", function() {
   nowContainer.style.display = "none";

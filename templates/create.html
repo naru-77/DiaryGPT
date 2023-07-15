@@ -17,6 +17,16 @@
       <input type="text" name="body" class="form-control" />
     </div>
     <input type="submit" value="新規登録" class="btn btn-primary" />
+    <div class="image">
+      <div class="image-form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="image-switch" value="create" checked />
+        <label class ="image-form-check-label">絵を生成する</label>
+      </div>
+      <div class="image-form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="image-switch" value="no-create" />
+        <label class="image-form-check-label">絵を生成しない</label>
+      </div>
+    </div>
   </form>
 
   <form onsubmit="event.preventDefault(); sendText();" class="mb-3">
