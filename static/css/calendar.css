@@ -1,10 +1,20 @@
 @charset "utf-8";
 
+/* 背景 */
+body {
+    background-image: url("https://beiz.jp/images_L/texture/texture_00003.jpg");
+
+    background-repeat: no-repeat;
+}
+
 /*全体*/
 .wrapper{
-    margin: 0 auto;
+    background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
+    margin: 40px auto;
     color: #666;
     width: 90vw; /* 画面幅の70% */
+    padding: 40px;
+    border-radius: 10px 50px/50px 10px;
 }
 
 #header {
@@ -111,11 +121,6 @@ td.today {
 }
 #next {
     float: right;
-}
-
-body {
-    background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
-    background-repeat: no-repeat;
 }
 
 
