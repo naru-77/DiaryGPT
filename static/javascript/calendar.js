@@ -25,8 +25,6 @@ function showProcess(date) {
     var month = date.getMonth();
     document.querySelector('#header').innerHTML = year + "年 " + (month + 1) + "月";
 
-    // var calendar = createProcess(year, month);
-    // document.querySelector('#calendar').innerHTML = calendar;
     const processPromise = createProcess(year, month);
     processPromise.then(process =>{
         document.querySelector('#calendar').innerHTML = process;
@@ -53,8 +51,7 @@ function createProcess(year, month) {
     //データ要求
     const diaryDataPromise = requestDiaryData(year, month+1, username);
     return diaryDataPromise.then(diaryData =>{
-        //diaryDataがdate,post_id,titleのオブジェクトの配列であるjson
-        console.log(diaryData)
+        //diaryDataは、date,post_id,titleのオブジェクトの配列であるjson
 
         // 1行ずつ設定
         for (var i = 0; i < row; i++) {
@@ -71,12 +68,21 @@ function createProcess(year, month) {
                 } else {
                     // 当月の日付を曜日に照らし合わせて設定
                     count++;
+
+                    //日記がある場合、contentRefにそのhtmlのa要素を取得
+                    let contentRef = "";
+                    if(obj = diaryData.find(item =>{
+                        return item.date === count;
+                    })){
+                        contentRef = `<a href='/${username}/${obj.post_id}/contents'>${obj.title}</a>`;
+                    }
+
                     if(year == today.getFullYear()
                       && month == (today.getMonth())
                       && count == today.getDate()){
-                        calendar += "<td class='today'>" + count + "</td>";
+                        calendar += "<td class='today'>" + count + contentRef + "</td>";
                     } else {
-                        calendar += "<td>" + count + "</td>";
+                        calendar += "<td>" + count + contentRef + "</td>";
                     }
                 }
             }
@@ -84,34 +90,6 @@ function createProcess(year, month) {
         }
         return calendar;
     })
-
-    // 1行ずつ設定
-    // for (var i = 0; i < row; i++) {
-    //     calendar += "<tr>";
-    //     // 1colum単位で設定
-    //     for (var j = 0; j < week.length; j++) {
-    //         if (i == 0 && j < startDayOfWeek) {
-    //             // 1行目で1日まで先月の日付を設定
-    //             calendar += "<td class='disabled'>" + (lastMonthEndDate - startDayOfWeek + j + 1) + "</td>";
-    //         } else if (count >= endDate) {
-    //             // 最終行で最終日以降、翌月の日付を設定
-    //             count++;
-    //             calendar += "<td class='disabled'>" + (count - endDate) + "</td>";
-    //         } else {
-    //             // 当月の日付を曜日に照らし合わせて設定
-    //             count++;
-    //             if(year == today.getFullYear()
-    //               && month == (today.getMonth())
-    //               && count == today.getDate()){
-    //                 calendar += "<td class='today'>" + count + "</td>";
-    //             } else {
-    //                 calendar += "<td>" + count + "</td>";
-    //             }
-    //         }
-    //     }
-    //     calendar += "</tr>";
-    // }
-    // return calendar;
 }
 
 //データ要求
