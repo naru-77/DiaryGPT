@@ -22,7 +22,7 @@ load_dotenv()
 
 # .envファイルから環境変数を読み込む
 openai.api_key =  os.getenv('OPENAI_API_KEY')
-# 以降のopenaiライブラリにはこのAPIを用いる 
+# 以降のopenaiライブラリにはこのAPIを用いる  
 
 # 環境変数の設定設定
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
@@ -329,11 +329,15 @@ def registerDiary(username, title, body, input_date, image_switch): # データ�
     posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得   
     
     # 新しいdb追加
-    latest_post_id = posts[len(posts)-1].post_id # 最新のpost_id
-    post = Post(username=username ,post_id=latest_post_id+1, title=title, body=body, date=date, picture = picture)
+    if len(posts) == 0:
+        latest_post_id = 1
+    else:
+        latest_post_id = posts[len(posts)-1].post_id +1 # 最新のpost_id
+        
+    post = Post(username=username ,post_id=latest_post_id, title=title, body=body, date=date, picture = picture)
     db.session.add(post)
     db.session.commit()
-    return redirect(f'/{username}/{latest_post_id+1}/contents')
+    return redirect(f'/{username}/{latest_post_id}/contents')
 
 
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る

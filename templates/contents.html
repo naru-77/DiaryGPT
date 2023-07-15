@@ -73,7 +73,6 @@
             </div>
           </div>
         </div>
-      </div>
     {% else %}
         <div class="background-container past" id="{{ posts[current_index-1].post_id }}">
   
@@ -147,14 +146,15 @@
           </div>
   
         </div>
+
     {% endif %}
     {% endif %}
     {% endfor %}
-
+      </div>
       <span id="pen"><img class="pen_img" src="/static/css/img/pen.png" alt=""></span>
       <span id="kesigomu"><img class="kesigomu_img" src="/static/css/img/kesigomu.png" alt=""></span>
       <!-- <img src="https://beiz.jp/images_L/paper/paper_00041.jpg" alt="" class="back"> -->
-    </div>
+    
 
     <button class="arrow next_design" id="next-button">次へ</button>
     <button class="arrow back_design" id="back-button">前へ</button>
