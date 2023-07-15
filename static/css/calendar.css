@@ -10,10 +10,10 @@ body {
 /*全体*/
 .wrapper{
     background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
-    margin: 40px auto;
+    margin: 55px auto;
     color: #666;
     width: 90vw; /* 画面幅の70% */
-    padding: 40px;
+    padding: 70px;
     border-radius: 10px 50px/50px 10px;
 }
 
@@ -150,6 +150,31 @@ td.today {
 
 
 /* 新規作成　ログインボタン */
+
+.green-myButton{
+    margin-top: 5px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #1cca65;
+    text-decoration: none;
+    font-family: "myfont", sans-serif;
+    padding: .5em 1em;
+    border-radius: 10px 50px/50px 10px;
+    border: dashed 2px #333;
+}
+
+.red{
+    margin-top: 5px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #294de9;
+    text-decoration: none;
+    font-family: "myfont", sans-serif;
+    padding: .5em 1em;
+    border-radius: 10px 50px/50px 10px;
+    border: dashed 1px #fff;
+}
+
 .myButton {
     color: #fff;
     font-weight: bold;
@@ -171,11 +196,10 @@ td.today {
 
 .title {
     text-align: center;
-    font-size: 2.5rem;
-    background: linear-gradient(transparent 40%,rgba(247, 198, 104, 0.2) 50%,rgb(247, 198, 104) 75%,rgba(247, 198, 104, 0.2));
-    background-size: 10% 1px;
     font-weight: bold;
     font-family: "myfont", sans-serif;
+    margin-top: -35px;
+    margin-bottom: 35px;
 }
 
 .signup-button {
