@@ -53,8 +53,8 @@
   <div class="gallery">
   <!-- 絵をランダムで -->
     <ul class="slider">
-      {%for post in posts %}
-      <li><a href="{{username}}/{{ post.post_id }}/contents"><img class="slider-image" src="{{ images_dict[post.post_id] }}" alt=""></a></li>
+      {%for post_id in picture_posts_id %}
+      <li><a href="{{username}}/{{ post_id }}/contents"><img class="slider-image" src="{{ images_dict[post_id] }}" alt=""></a></li>
       {% endfor %}
     </ul>
     

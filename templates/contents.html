@@ -32,10 +32,11 @@
             <div class="title">
               <h1>{{ post.title }}</h1>
             </div>
-
+            {% if images_dict[post_id]!= None %}
             <div class="picture">
               <img src="{{ images_dict[post_id] }}" alt="Generated Image">
             </div>
+            {% endif %}
   
             <div class="container">
               <div class="content">{{ post.body }}</div>
@@ -63,9 +64,11 @@
           <div class="title">
             <h1>{{ posts[posts_length-1].title }}</h1>
           </div>
+          {% if images_dict[posts[posts_length-1].post_id]!= None %}
           <div class="picture">
             <img src="{{ images_dict[posts[posts_length-1].post_id] }}" alt="Generated Image">
           </div>
+          {% endif %}
           <div class="container">
             <div class="content">{{ posts[posts_length-1].body }}</div>
           </div>
@@ -84,8 +87,10 @@
             <div class="title">
               <h1>{{  posts[current_index-1].title }}</h1>
             </div>
+            {% if images_dict[posts[current_index-1].post_id]!= None %}
             <div class="picture">
               <img src="{{ images_dict[posts[current_index-1].post_id] }}" alt="Generated Image">
+            {% endif %}
             </div>
             <div class="container">
               <div class="content">{{  posts[current_index-1].body }}</div>
@@ -111,9 +116,11 @@
             <div class="title">
               <h1>{{ posts[0].title }}</h1>
             </div>
+            {% if images_dict[posts[0].post_id] != None %}
             <div class="picture">
-              <img src="{{ images_dict[posts[0].post_id ] }}" alt="Generated Image">
+              <img src="{{ images_dict[posts[0].post_id] }}" alt="Generated Image">
             </div>
+            {% endif %}
             <div class="container">
               <div class="content">{{ posts[0].body }}</div>
             </div>
@@ -136,9 +143,11 @@
             <div class="title">
               <h1>{{ posts[current_index+1].title }}</h1>
             </div>
+            {% if images_dict[posts[current_index+1].post_id] != None %}
             <div class="picture">
               <img src="{{ images_dict[posts[current_index+1].post_id] }}" alt="Generated Image">
             </div>
+            {% endif %}
             <div class="container">
               <div class="content">{{ posts[current_index+1].body }}</div>
             </div>

@@ -70,6 +70,9 @@ function sendMessage(message) {
       body: new URLSearchParams({
         prompt: message,
         date: document.querySelector("#date-form").value,
+        // 絵を生成するかどうか
+        image_switch: document.querySelector('input[name="voice-lang"]:checked'
+        ).value
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

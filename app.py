@@ -5,7 +5,7 @@ from sqlalchemy import extract
 import datetime  
 from datetime import timedelta
 import pytz
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 import openai
 from flask_login import UserMixin, LoginManager, login_user,logout_user, login_required # flask_loginのインストールが必要
@@ -18,15 +18,15 @@ import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import math
 import base64 # 画像の表示に使う
 
-load_dotenv()
+# load_dotenv()
 
 # .envファイルから環境変数を読み込む
-openai.api_key =  os.getenv('OPENAI_API_KEY')
-# 以降のopenaiライブラリにはこのAPIを用いる 
+openai.api_key =  "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"
+# 以降のopenaiライブラリにはこのAPIを用いる os.getenv('OPENAI_API_KEY')
 
 # 環境変数の設定設定
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
-os.environ['STABILITY_KEY'] = 'APIキーを入れる'
+os.environ['STABILITY_KEY'] = 'sk-WXXLDsWPn5NiAlVuE6h6yXvk6nHN2hzyjORsNMjRcPDhDXd0'
 
 # ここからDB 
 
@@ -89,15 +89,18 @@ def home(username):
     # random性を持たせるのをやめた
     # nums = list(range(1, user.post_count + 1))  # 範囲の数列を作成
     # random.shuffle(nums)  # 数列をシャッフル
+    picture_posts_id = []
     for post in posts:
-        # バイナリデータをImageオブジェクトに変換
-        image = Image.open(io.BytesIO(post.picture))
-        # 画像データをデータURI形式に変換する
-        image_uri = image_to_data_uri(image)
-        # 画像のuriとpost_idを紐づけ
-        images_dict[post.post_id] = image_uri
+        if(post.picture != None):
+            # バイナリデータをImageオブジェクトに変換
+            image = Image.open(io.BytesIO(post.picture))
+            # 画像データをデータURI形式に変換する
+            image_uri = image_to_data_uri(image)
+            # 画像のuriとpost_idを紐づけ
+            images_dict[post.post_id] = image_uri
+            picture_posts_id.append(post.post_id) # 画像を持つpostを追加
 
-    return render_template('home.html', posts=posts, username=username,images_dict=images_dict)
+    return render_template('home.html', picture_posts_id=picture_posts_id, username=username,images_dict=images_dict)
 
         
 
@@ -171,7 +174,9 @@ def create(username):
         title = request.form.get('title')
         body = request.form.get('body')
         input_date = request.form.get('date')
-        return registerDiary(username, title, body, input_date)
+        image_switch = request.form.get('image_switch')
+        
+        return registerDiary(username, title, body, input_date, image_switch)
     
     else:
         return render_template('create.html', username=username)
@@ -218,12 +223,16 @@ def contents(post_id,username):
     images_dict = {}
     
     for post in posts:
-        # バイナリデータをImageオブジェクトに変換
-        image = Image.open(io.BytesIO(post.picture))
-        # 画像データをデータURI形式に変換する
-        image_uri = image_to_data_uri(image)
-        # 画像のuriとpost_idを紐づけ
-        images_dict[post.post_id] = image_uri
+        if(post.picture != None):
+            # バイナリデータをImageオブジェクトに変換
+            image = Image.open(io.BytesIO(post.picture))
+            # 画像データをデータURI形式に変換する
+            image_uri = image_to_data_uri(image)
+            # 画像のuriとpost_idを紐づけ
+            images_dict[post.post_id] = image_uri
+        else:
+            # 画像がない場合
+            images_dict[post.post_id] = None
 
     return render_template('contents.html', posts=posts, user=user,post_id=post_id, images_dict=images_dict)
 
@@ -299,7 +308,7 @@ def gpt():
         return str(e), 500
 
 
-def registerDiary(username, title, body, input_date, picture=None): # データベースに日記を登録
+def registerDiary(username, title, body, input_date, image_switch): # データベースに日記を登録
     #日付の取得と整合性のチェック
     if re.match(r'\d{4}-\d{2}-\d{2}', input_date): #13月32日みたいなのはhtmlフォーム側で除外してくれる
         date = datetime.datetime.strptime(input_date, '%Y-%m-%d')
@@ -311,7 +320,11 @@ def registerDiary(username, title, body, input_date, picture=None): # データ�
     if(Post.query.filter_by(username=username, date=date).first()):
         return redirect(f'/{username}/create') #これだと書いた内容が消えちゃうので余裕あれば直したい
     
-    picture = create_img(body) # 絵の生成
+    if(image_switch == "create"):
+        picture = create_img(body) # 絵の生成
+    else:
+        picture = None
+        
     user = User.query.filter_by(username=username).first()
     user.post_count += 1  # 投稿数を1増やす
     posts = Post.query.filter_by(username=username).all() # ユーザーネームが等しいものをすべて取得   
@@ -329,6 +342,7 @@ def summary(username):
     global messages  # messages をグローバル変数として宣言 chatgptの記憶
     prompt = request.form.get('prompt')
     input_date = request.form.get('date')
+    image_switch = request.form.get('image_switch')
     
     messages.append({"role": "user", "content": prompt})
 
@@ -344,7 +358,7 @@ def summary(username):
     
     input_date = request.form.get('date')
     
-    return registerDiary(username, diary_title, diary_response, input_date)
+    return registerDiary(username, diary_title, diary_response, input_date, image_switch)
 
 
 
