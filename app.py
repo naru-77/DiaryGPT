@@ -183,10 +183,8 @@ def create(username):
 @app.route('/<username>/<int:post_id>/update', methods=['GET','POST']) # ユーザー専用編集
 @login_required # アクセス制限
 def update(post_id,username):
-    posts = Post.query.filter_by(username=username).first()
-    if posts != None:
-        post = posts.query.get(post_id)
-    
+    post = Post.query.filter_by(username=username, post_id=post_id).first()
+    if post != None:
         if request.method == 'GET':
             return render_template('update.html', post=post)    
         else:
