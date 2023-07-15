@@ -41,9 +41,8 @@ login_manager = LoginManager() # LoginManagerをインスタンス化
 login_manager.init_app(app)
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, primary_key=True)  # 投稿ID
     username = db.Column(db.String(30), nullable=True)  # ユーザー名
-    post_id = db.Column(db.Integer, nullable=False)  # 投稿ID
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
     date = db.Column(db.Date, nullable=False, default=datetime.date.today(), unique=True)
@@ -106,6 +105,7 @@ def home(username):
 
 
 @app.route('/cal', methods=['POST']) # カレンダーからの要求への応答
+@login_required # アクセス制限
 def cal():
     data = request.get_json()
     year = data.get('year')
@@ -154,7 +154,7 @@ def login():
         return render_template('login.html')
     
 
-@login_manager.unauthorized_handler
+@login_manager.unauthorized_handler #ログインしていなければログイン画面へ
 def unauthorized():
     return redirect('/login')
 
@@ -295,6 +295,7 @@ def title_chatgpt(prompt): # タイトルをつける
 
 
 @app.route('/gpt', methods=['POST']) # 質問を作る
+@login_required # アクセス制限
 def gpt():
     try:
         prompt = request.form.get('speech')
@@ -338,6 +339,7 @@ def registerDiary(username, title, body, input_date, image_switch): # データ�
 
 
 @app.route('/<username>/summary', methods=['POST']) # 日記を作る
+@login_required # アクセス制限
 def summary(username):
     global messages  # messages をグローバル変数として宣言 chatgptの記憶
     prompt = request.form.get('prompt')
