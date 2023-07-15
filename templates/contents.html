@@ -27,7 +27,7 @@
         <div class="content">
   
           <div class="date">
-            <p>{{ post.created_at }}</p>
+            <p>{{ post.date.strftime("%Y年%#m月%#d日") }}</p>
           </div>
           <div class="title">
             <h1>{{ post.title }}</h1>
@@ -58,7 +58,7 @@
           <div class="content">
 
             <div class="date">
-              <p>{{ posts[posts_length-1].created_at }}</p>
+              <p>{{ posts[posts_length-1].date.strftime("%Y年%#m月%#d日") }}</p>
             </div>
             <div class="title">
               <h1>{{ posts[posts_length-1].title }}</h1>
@@ -79,7 +79,7 @@
           <div class="content">
   
             <div class="date">
-              <p>{{  posts[current_index-1].created_at }}</p>
+              <p>{{ posts[current_index-1].date.strftime("%Y年%#m月%#d日") }}</p>
             </div>
             <div class="title">
               <h1>{{  posts[current_index-1].title }}</h1>
@@ -106,7 +106,7 @@
           <div class="content">
   
             <div class="date">
-              <p>{{ posts[0].created_at }}</p>
+              <p>{{ posts[0].date.strftime("%Y年%#m月%#d日") }}</p>
             </div>
             <div class="title">
               <h1>{{ posts[0].title }}</h1>
@@ -131,7 +131,7 @@
           <div class="content">
   
             <div class="date">
-              <p>{{ posts[current_index+1].created_at }}</p>
+              <p>{{ posts[current_index+1].date.strftime("%Y年%#m月%#d日") }}</p>
             </div>
             <div class="title">
               <h1>{{ posts[current_index+1].title }}</h1>
