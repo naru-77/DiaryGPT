@@ -2,6 +2,7 @@
 
 body {
     background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
+    z-index: -99;
 }
 
 
