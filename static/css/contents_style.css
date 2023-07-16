@@ -20,7 +20,7 @@ html {
   justify-content: center;
   align-items: center;
   margin: 20px 0;
-
+  word-break: break-all; /* 半角英数字の改行 */
 }
 
 .title h1 {
@@ -129,6 +129,7 @@ body{
 .content {
   line-height: 2rem;
   margin: 0;
+  word-break: break-all; /* 半角英数字の改行 */
 }
 
 
