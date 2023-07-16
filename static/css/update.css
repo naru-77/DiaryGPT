@@ -1,79 +1,81 @@
 .update_title input {
-    text-align: center;
-    width: 100%;
-    height: auto;
-  }
+  text-align: center;
+  width: 100%;
+  height: auto;
+}
 
-  .update_title {
-    width: 400px;
-    height: 80px;
-    margin: 0 auto;
-  }
+.update_title {
+  width: 400px;
+  height: 80px;
+  margin: 0 auto;
+}
 
-  .body {
-    width: 100%;
-    height: 60vh;
-  }
+.body {
+  width: 100%;
+  height: 60vh;
+}
 
 .update_container {
-    width: 100%;
-    height: 100%;
-    white-space: pre-wrap; /* 入力された改行や空白スペースを保持 */
-    overflow-wrap: break-word; /* 長い単語が行の終わりに来た場合に自動で改行 */
+  width: 100%;
+  height: 100%;
+  white-space: pre-wrap; /* 入力された改行や空白スペースを保持 */
+  overflow-wrap: break-word; /* 長い単語が行の終わりに来た場合に自動で改行 */
 }
 
 .background-container.flex-container {
-  /* 必要に応じて以下の高さを調整 */
-  height: 100vh; 
+/* 必要に応じて以下の高さを調整 */
+height: 100vh; 
+z-index: -100;
+position: relative;
 }
 
 .login-button {
-  width: 100%;
-  background-color: #3c8aff;
+width: 100%;
+background-color: #3c8aff;
+color: #fff;
 }
 
 
 /* 鉛筆 */
 #pen {
-  display: block;
-  position: absolute;
-  bottom: -160px;
-  right: 30px;
-  width: auto;
-  max-height: 50%;
+display: block;
+position: absolute;
+bottom: -160px;
+right: -7vw;
+width: auto;
+max-height: 50%;
 }
 
 .pen_img{
-  width: 100%;
-  height: 100%;
+width: 100%;
+height: 100%;
 }
 
 /* 消しゴム */
 #kesigomu {
-  display: block;
-  position: absolute;
-  bottom: -100px;
-  left: 30px;
-  width: auto;
-  max-height: 50%;
+display: block;
+position: absolute;
+bottom: -100px;
+left: 30px;
+width: auto;
+max-height: 50%;
 }
 
 .kesigomu_img{
-  width: 100%;
-  height: 100%;
+width: 100%;
+height: 100%;
 }
 
-
 .myButton {
-  color: #fff;
-  font-weight: bold;
-  padding: 14px 19px;
-  border: solid 1px #fff;
-  background-color: #A0522D;
-  text-decoration: none;
-  padding: .5em 1em;
-  /* background: #fff; */
-  border-radius: 10px 50px/50px 10px;
-  border: dashed 2px #333;
-  font-family: "myfont", sans-serif;
+color: #fff;
+font-weight: bold;
+padding: 14px 19px;
+border: solid 1px #fff;
+background-color: #A0522D;
+text-decoration: none;
+padding: .5em 1em;
+/* background: #fff; */
+border-radius: 10px 50px/50px 10px;
+border: dashed 2px #333;
+font-family: "myfont", sans-serif;
 }
