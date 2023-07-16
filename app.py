@@ -274,7 +274,7 @@ def query_chatgpt(prompt): # 質問を生成する
 
 def summary_chatgpt(prompt): # 日記をまとめる
 
-    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかず、以上の情報の内容に沿った文章の誇張の範囲でなら少し付け加えてもかまいません。タイトルは絶対につけないでください。"})
+    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかず、文章の誇張は以上の情報の内容に沿った範囲でなら少し付け加えてもかまいません。タイトルは絶対につけないでください。"})
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
