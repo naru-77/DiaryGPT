@@ -196,6 +196,12 @@ td.today {
     right: 0;
     display: flex;
     justify-content: space-between;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+.button-group .red  {
+    margin-right: 0.5rem;
 }
 
 .title {

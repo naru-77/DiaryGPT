@@ -81,4 +81,6 @@ padding: .5em 1em;
 border-radius: 10px 50px/50px 10px;
 border: dashed 2px #333;
 font-family: "myfont", sans-serif;
+margin-top: 0.5em;
+margin-left: 0.5em;
 }
