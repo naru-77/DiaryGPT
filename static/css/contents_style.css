@@ -122,13 +122,20 @@ body{
 .container {
   background: linear-gradient(#ccc 1px, transparent 2px);
   background-size: auto 2rem;
-  margin: 80px;
-
+  margin: 80px auto;
+  width: 80%;
 }
 
 .content {
   line-height: 2rem;
   margin: 0;
+}
+
+
+@media screen and (min-width: 1400px){
+  .container { 
+    max-width: 80%;
+}
 }
 
 /* ボタン */
@@ -318,3 +325,5 @@ body{
   text-decoration: none;
   color: #fff;
 }
+
+
