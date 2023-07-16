@@ -1,3 +1,7 @@
+.title {
+  font-family: "myfont", sans-serif;
+}
+
 .update_title input {
   text-align: center;
   width: 100%;
