@@ -3,7 +3,7 @@
 /* 背景 */
 body {
     background-image: url("https://beiz.jp/images_L/texture/texture_00003.jpg");
-
+    font-family: "myfont", sans-serif;
     /* background-repeat: no-repeat; */
 }
 
@@ -23,6 +23,7 @@ body {
     width: 100%;
     margin: 1rem 0 0;
     font-family: "myfont", sans-serif;
+    color: #666;
 }
 
 /*カレンダー*/
@@ -33,6 +34,9 @@ body {
     font-family: "myfont", sans-serif;
 }
 
+.subtitle {
+    color: #666;
+}
 
 td {
     color: #000;
