@@ -274,7 +274,7 @@ def query_chatgpt(prompt): # 質問を生成する
 
 def summary_chatgpt(prompt): # 日記をまとめる
 
-    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかないでください。文章は誇張の範囲でなら少し付け加えてもかまいません。タイトルは絶対につけないでください。"})
+    prompt.append({"role": "user", "content": "以上の情報を用いて、見やすさと分かりやすさに気をつけて日記を作成してください。絶対に嘘をつかず、以上の情報の内容に沿った文章の誇張の範囲でなら少し付け加えてもかまいません。タイトルは絶対につけないでください。"})
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -398,7 +398,7 @@ def create_img(prompt):
     # chatgptが絵を生成するためのプロンプト生成
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "以下の情報を用いて、その情報を表す手書きで書かれたような絵を生成するようなプロンプトを英語で出してください。プロンプトのみの出力でいいです。"},
+        messages=[{"role": "user", "content": "あなたは絵の上手な小学生です。以下の情報を用いて、その情報を表す手書きで書かれたような絵を生成するようなプロンプトを英語で出してください。プロンプトのみの出力でいいです。"},
         {"role": "user", "content": prompt}]
     )
 
