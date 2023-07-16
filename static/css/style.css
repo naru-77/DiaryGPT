@@ -73,12 +73,17 @@ a {
 .slider {/*横幅94%で左右に余白を持たせて中央寄せ*/
   width:94%;
   margin:100px auto;
+  display: flex;
+  justify-content: space-around;
 }
 
 .slider img {
    max-width:100%;/*スライダー内の画像を横幅100%に*/
    height:auto;
+   text-align: center;
+   margin: 0 auto;
 }
+
 
 .slider li {
   text-align: center;
@@ -124,7 +129,6 @@ a {
 
 .slick-dots li {
    display:inline-block;
- margin:0 5px;
 }
 
 .slick-dots button {
@@ -150,8 +154,6 @@ body{
 
 
 ul{
- margin:0;
- padding: 0;
  list-style: none;
 }
 
