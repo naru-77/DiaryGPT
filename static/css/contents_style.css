@@ -56,7 +56,7 @@ body{
 /* 日記全体 */
 .background-container {
   width: 100%; 
-  min-height: 100vh;
+  min-height: 80vh;
   background-image: url("https://beiz.jp/images_L/paper/paper_00041.jpg");
   background-size: cover;
   background-position: center;
