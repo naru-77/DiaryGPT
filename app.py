@@ -192,9 +192,10 @@ def create(username):
 @login_required # アクセス制限
 def update(post_id,username):
     post = Post.query.filter_by(username=username, post_id=post_id).first()
+    user = User.query.filter_by(username=username).first()
     if post != None:
         if request.method == 'GET':
-            return render_template('update.html', post=post)    
+            return render_template('update.html', post=post, user=user)    
         else:
             post.title = request.form.get('title')
             post.body = request.form.get('body')
