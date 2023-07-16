@@ -292,6 +292,11 @@ body{
   border: dashed 2px #333;
 }
 
+.delete_btn a{
+  width: 100%;
+  height: 100%;
+}
+
 
 
 
