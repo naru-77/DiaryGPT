@@ -201,7 +201,7 @@ def update(post_id,username):
             post.body = request.form.get('body')
 
             db.session.commit()
-            return redirect(f'/{username}')
+            return redirect(f'/{username}/{post_id}/contents')
     
 @app.route('/<username>/<int:post_id>/delete', methods=['GET']) # ユーザー専用削除
 @login_required # アクセス制限
