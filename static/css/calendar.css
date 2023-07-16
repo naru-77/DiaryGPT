@@ -4,7 +4,7 @@
 body {
     background-image: url("https://beiz.jp/images_L/texture/texture_00003.jpg");
 
-    background-repeat: no-repeat;
+    /* background-repeat: no-repeat; */
 }
 
 /*全体*/
